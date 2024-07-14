@@ -34,7 +34,6 @@ export default async function Page() {
 
       <div>
         <Divider />
-
         <Title>Create a Tool</Title>
         <Link
           href="/admin/tools/new"

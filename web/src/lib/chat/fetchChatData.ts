@@ -128,6 +128,7 @@ export async function fetchChatData(searchParams: {
   }
 
   let assistants = rawAssistantsList;
+  console.log(assistants);
   if (assistantsFetchError) {
     console.log(`Failed to fetch assistants - ${assistantsFetchError}`);
   }

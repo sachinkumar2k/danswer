@@ -38,9 +38,8 @@ personas:
     #   - "Benefits"
     document_sets: []
 
-
   - id: 1
-    name: "GPT"
+    name: "LLM"
     description: >
       Assistant with no access to documents. Chat with just the Language Model.
     prompts:
@@ -51,14 +50,13 @@ personas:
     recency_bias: "auto"
     document_sets: []
 
-
   - id: 2
-    name: "Paraphrase"
+    name: "Email Assistant"
     description: >
-      Assistant that is heavily constrained and only provides exact quotes from Connected Sources.
+      Assistant which helps you write fantastic emails.
     prompts:
-      - "Paraphrase"
-    num_chunks: 10
+      - "EmailGen"
+    num_chunks: 0
     llm_relevance_filter: true
     llm_filter_extraction: true
     recency_bias: "auto"

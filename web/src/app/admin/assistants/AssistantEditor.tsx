@@ -406,7 +406,6 @@ export function AssistantEditor({
                   name="name"
                   tooltip="Used to identify the Assistant in the UI."
                   label="Name"
-                  disabled={isUpdate}
                   placeholder="e.g. 'Email Assistant'"
                 />
                 <TextFormField
