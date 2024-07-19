@@ -1,3 +1,4 @@
+import time
 import uuid
 from collections.abc import Callable
 from concurrent.futures import as_completed
@@ -18,17 +19,9 @@ def run_functions_tuples_in_parallel(
     allow_failures: bool = False,
     max_workers: int | None = None,
 ) -> list[Any]:
-    """
-    Executes multiple functions in parallel and returns a list of the results for each function.
+    start_time = time.time()
+    logger.info(f"Starting parallel execution of {len(functions_with_args)} functions")
 
-    Args:
-        functions_with_args: List of tuples each containing the function callable and a tuple of arguments.
-        allow_failures: if set to True, then the function result will just be None
-        max_workers: Max number of worker threads
-
-    Returns:
-        dict: A dictionary mapping function names to their results or error messages.
-    """
     workers = (
         min(max_workers, len(functions_with_args))
         if max_workers is not None
@@ -36,28 +29,98 @@ def run_functions_tuples_in_parallel(
     )
 
     if workers <= 0:
+        logger.warning("No workers available, returning empty list")
         return []
+
+    logger.info(f"Using {workers} workers")
 
     results = []
     with ThreadPoolExecutor(max_workers=workers) as executor:
-        future_to_index = {
-            executor.submit(func, *args): i
-            for i, (func, args) in enumerate(functions_with_args)
-        }
+        future_to_index = {}
+        for i, (func, args) in enumerate(functions_with_args):
+            future = executor.submit(func, *args)
+            future_to_index[future] = i
+            logger.debug(
+                f"Submitted function {func.__name__} with args {args} at index {i}"
+            )
 
         for future in as_completed(future_to_index):
             index = future_to_index[future]
+            func_start_time = time.time()
             try:
-                results.append((index, future.result()))
+                result = future.result()
+                func_end_time = time.time()
+                func_duration = func_end_time - func_start_time
+                logger.info(
+                    f"Function at index {index} completed in {func_duration:.4f} seconds"
+                )
+                results.append((index, result))
             except Exception as e:
-                logger.exception(f"Function at index {index} failed due to {e}")
+                func_end_time = time.time()
+                func_duration = func_end_time - func_start_time
+                logger.exception(
+                    f"Function at index {index} failed after {func_duration:.4f} seconds due to {e}"
+                )
                 results.append((index, None))
 
                 if not allow_failures:
+                    logger.error(
+                        f"Raising exception due to failure in function at index {index}"
+                    )
                     raise
 
     results.sort(key=lambda x: x[0])
+    end_time = time.time()
+    total_duration = end_time - start_time
+    logger.info(f"Parallel execution completed in {total_duration:.4f} seconds")
     return [result for index, result in results]
+
+
+# def run_functions_tuples_in_parallel(
+#     functions_with_args: list[tuple[Callable, tuple]],
+#     allow_failures: bool = False,
+#     max_workers: int | None = None,
+# ) -> list[Any]:
+#     """
+#     Executes multiple functions in parallel and returns a list of the results for each function.
+
+#     Args:
+#         functions_with_args: List of tuples each containing the function callable and a tuple of arguments.
+#         allow_failures: if set to True, then the function result will just be None
+#         max_workers: Max number of worker threads
+
+#     Returns:
+#         dict: A dictionary mapping function names to their results or error messages.
+#     """
+#     workers = (
+#         min(max_workers, len(functions_with_args))
+#         if max_workers is not None
+#         else len(functions_with_args)
+#     )
+
+#     if workers <= 0:
+#         return []
+
+#     results = []
+#     with ThreadPoolExecutor(max_workers=workers) as executor:
+#         future_to_index = {
+#             executor.submit(func, *args): i
+#             for i, (func, args) in enumerate(functions_with_args)
+#         }
+
+#         for future in as_completed(future_to_index):
+#             index = future_to_index[future]
+#             try:
+#                 results.append((index, future.result()))
+#             except Exception as e:
+#                 logger.exception(f"Function at index {index} failed due to {e}")
+#                 results.append((index, None))
+
+#                 if not allow_failures:
+#                     raise
+
+#     results.sort(key=lambda x: x[0])
+#     return [result for index, result in results]
 
 
 class FunctionCall(Generic[R]):

@@ -275,6 +275,7 @@ def search_postprocessing(
         )
 
     parallel_start = time.time()
+    
     post_processing_results = (
         run_functions_in_parallel(post_processing_tasks)
         if post_processing_tasks
