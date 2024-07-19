@@ -51,15 +51,17 @@ def run_functions_tuples_in_parallel(
                 result = future.result()
                 func_end_time = time.time()
                 func_duration = func_end_time - func_start_time
+                total_duration = func_end_time - start_time
                 logger.info(
-                    f"Function at index {index} completed in {func_duration:.4f} seconds"
+                    f"Function at index {index} completed in {func_duration:.4f} seconds (Total time: {total_duration:.4f})"
                 )
                 results.append((index, result))
             except Exception as e:
                 func_end_time = time.time()
                 func_duration = func_end_time - func_start_time
+                total_duration = func_end_time - start_time
                 logger.exception(
-                    f"Function at index {index} failed after {func_duration:.4f} seconds due to {e}"
+                    f"Function at index {index} failed after {func_duration:.4f} seconds (Total time: {total_duration:.4f}) due to {e}"
                 )
                 results.append((index, None))
 
