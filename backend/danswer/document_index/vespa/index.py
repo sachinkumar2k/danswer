@@ -1,3 +1,4 @@
+from danswer.utils.timing import log_function_time
 import concurrent.futures
 import io
 import json
@@ -629,11 +630,13 @@ def _query_vespa(
 
     params = dict(
         **query_params,
-        **{
-            "presentation.timing": True,
-        }
-        if LOG_VESPA_TIMING_INFORMATION
-        else {},
+        **(
+            {
+                "presentation.timing": True,
+            }
+            if LOG_VESPA_TIMING_INFORMATION
+            else {}
+        ),
     )
 
     response = requests.post(
@@ -960,6 +963,7 @@ class VespaIndex(DocumentIndex):
                     document_ids=doc_ids, index_name=index_name, http_client=http_client
                 )
 
+    @log_function_time()
     def id_based_retrieval(
         self,
         document_id: str,
@@ -1100,12 +1104,14 @@ class VespaIndex(DocumentIndex):
             "query": query_keywords,
             "input.query(query_embedding)": str(query_embedding),
             "input.query(decay_factor)": str(DOC_TIME_DECAY * time_decay_multiplier),
-            "input.query(alpha)": hybrid_alpha
-            if hybrid_alpha is not None
-            else HYBRID_ALPHA,
-            "input.query(title_content_ratio)": title_content_ratio
-            if title_content_ratio is not None
-            else TITLE_CONTENT_RATIO,
+            "input.query(alpha)": (
+                hybrid_alpha if hybrid_alpha is not None else HYBRID_ALPHA
+            ),
+            "input.query(title_content_ratio)": (
+                title_content_ratio
+                if title_content_ratio is not None
+                else TITLE_CONTENT_RATIO
+            ),
             "hits": num_to_retrieve,
             "offset": offset,
             "ranking.profile": f"hybrid_search{len(query_embedding)}",

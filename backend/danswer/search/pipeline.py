@@ -244,21 +244,10 @@ class SearchPipeline:
                 )
             )
 
-
-        logger.info(f"Starting parallel execution with {len(functions_with_args)} functions")
-        parallel_start = time.time()
         list_inference_chunks = run_functions_tuples_in_parallel(
             functions_with_args, allow_failures=False
         )
-        parallel_end = time.time()
-        parallel_duration = parallel_end - parallel_start
-        logger.info(f"Parallel execution completed in {parallel_duration:.4f} seconds")
-        logger.info(f"Retrieved {len(list_inference_chunks)} inference chunks")
 
-        # list_inference_chunks = run_functions_tuples_in_parallel(
-        #     functions_with_args, allow_failures=False
-        # )
-        parallel_start = time.time()
 
         # logger.info(f"Parallel processing for general flow took {time.time() - parallel_start:.4f} seconds")
 
