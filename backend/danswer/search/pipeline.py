@@ -243,6 +243,7 @@ class SearchPipeline:
                     ),
                 )
             )
+            break
 
         list_inference_chunks = run_functions_tuples_in_parallel(
             functions_with_args, allow_failures=False
