@@ -142,7 +142,6 @@ def _vespa_get_updated_at_attribute(t: datetime | None) -> int | None:
 
     return int(t.timestamp())
 
-
 def _get_vespa_chunks_by_document_id(
     document_id: str,
     index_name: str,
@@ -183,24 +182,13 @@ def _get_vespa_chunks_by_document_id(
         # for the ACL in the selection. Instead, we have to check as a postfilter
         "selection": selection,
         "continuation": None,
-        "wantedDocumentCount": 1,
+        "wantedDocumentCount": 1_000,
         "fieldSet": field_set,
     }
 
     document_chunks: list[dict] = []
-    count = 0
-
     while True:
-        logger.info(f"Iteration number: {count}")
-        count += 1
-        start_time = time.time()
-        logger.info(url)
-        logger.info(params)
         response = requests.get(url, params=params)
-        end_time = time.time()
-        total_duration = end_time - start_time
-        logger.info(f"Request took {total_duration:.4f} seconds")
-
         try:
             response.raise_for_status()
         except requests.HTTPError as e:
@@ -236,6 +224,103 @@ def _get_vespa_chunks_by_document_id(
             break  # Exit loop if no continuation token
 
     return document_chunks
+
+
+
+# def _get_vespa_chunks_by_document_id(
+#     document_id: str,
+#     index_name: str,
+#     user_access_control_list: list[str] | None = None,
+#     min_chunk_ind: int | None = None,
+#     max_chunk_ind: int | None = None,
+#     field_names: list[str] | None = None,
+# ) -> list[dict]:
+#     # Constructing the URL for the Visit API
+#     # NOTE: visit API uses the same URL as the document API, but with different params
+#     url = DOCUMENT_ID_ENDPOINT.format(index_name=index_name)
+
+#     # build the list of fields to retrieve
+#     field_set_list = (
+#         None
+#         if not field_names
+#         else [f"{index_name}:{field_name}" for field_name in field_names]
+#     )
+#     acl_fieldset_entry = f"{index_name}:{ACCESS_CONTROL_LIST}"
+#     if (
+#         field_set_list
+#         and user_access_control_list
+#         and acl_fieldset_entry not in field_set_list
+#     ):
+#         field_set_list.append(acl_fieldset_entry)
+#     field_set = ",".join(field_set_list) if field_set_list else None
+
+#     # build filters
+#     selection = f"{index_name}.document_id=='{document_id}'"
+#     if min_chunk_ind is not None:
+#         selection += f" and {index_name}.chunk_id>={min_chunk_ind}"
+#     if max_chunk_ind is not None:
+#         selection += f" and {index_name}.chunk_id<={max_chunk_ind}"
+
+#     # Setting up the selection criteria in the query parameters
+#     params = {
+#         # NOTE: Document Selector Language doesn't allow `contains`, so we can't check
+#         # for the ACL in the selection. Instead, we have to check as a postfilter
+#         "selection": selection,
+#         "continuation": None,
+#         "wantedDocumentCount": 1_000,
+#         "fieldSet": field_set,
+#     }
+
+#     document_chunks: list[dict] = []
+#     count = 0
+
+#     while True:
+#         logger.info(f"Iteration number: {count}")
+#         count += 1
+#         start_time = time.time()
+#         logger.info(url)
+
+#         response = requests.get(url, params=params)
+#         end_time = time.time()
+#         total_duration = end_time - start_time
+#         logger.info(f"Request took {total_duration:.4f} seconds")
+
+#         try:
+#             response.raise_for_status()
+#         except requests.HTTPError as e:
+#             request_info = f"Headers: {response.request.headers}\nPayload: {params}"
+#             response_info = f"Status Code: {response.status_code}\nResponse Content: {response.text}"
+#             error_base = f"Error occurred getting chunk by Document ID {document_id}"
+#             logger.error(
+#                 f"{error_base}:\n"
+#                 f"{request_info}\n"
+#                 f"{response_info}\n"
+#                 f"Exception: {e}"
+#             )
+#             raise requests.HTTPError(error_base) from e
+
+#         # Check if the response contains any documents
+#         response_data = response.json()
+#         if "documents" in response_data:
+#             print(len(response_data["documents"]))
+#             for document in response_data["documents"]:
+#                 if user_access_control_list:
+#                     document_acl = document["fields"].get(ACCESS_CONTROL_LIST)
+#                     if not document_acl or not any(
+#                         user_acl_entry in document_acl
+#                         for user_acl_entry in user_access_control_list
+#                     ):
+#                         continue
+#                 document_chunks.append(document)
+#             document_chunks.extend(response_data["documents"])
+
+#         # Check for continuation token to handle pagination
+#         if "continuation" in response_data and response_data["continuation"]:
+#             params["continuation"] = response_data["continuation"]
+#         else:
+#             break  # Exit loop if no continuation token
+
+#     return document_chunks
 
 
 def _get_vespa_chunk_ids_by_document_id(
@@ -991,6 +1076,14 @@ class VespaIndex(DocumentIndex):
             min_chunk_ind=min_chunk_ind,
             max_chunk_ind=max_chunk_ind,
         )
+
+        # vespa_chunks = _get_vespa_chunks_by_document_id(
+        #     document_id=document_id,
+        #     index_name=self.index_name,
+        #     user_access_control_list=user_access_control_list,
+        #     min_chunk_ind=min_chunk_ind,
+        #     max_chunk_ind=max_chunk_ind,
+        # )
 
         if not vespa_chunks:
             return []

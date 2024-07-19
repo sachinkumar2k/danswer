@@ -1,0 +1,1001 @@
+{
+    "nodes": [
+        {
+            "hostname": "d014e97fb8b0",
+            "role": "hosts/d014e97fb8b0",
+            "services": [
+                {
+                    "name": "vespa.container",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 3668787200,
+                                "memory_rss": 1418551296,
+                                "cpu": 5.0388678493123,
+                                "cpu_util": 1.2597169623281
+                            },
+                            "dimensions": {
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "feed.operations.rate": 0,
+                                "feed.latency.sum": 0,
+                                "feed.latency.count": 0
+                            },
+                            "dimensions": {
+                                "api": "documentV1",
+                                "status": "OK",
+                                "operation": "PUT",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0.0083612040134,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 598,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.work_queue.capacity.max": 650,
+                                "jdisc.thread_pool.active_threads.sum": 5,
+                                "jdisc.thread_pool.active_threads.count": 598,
+                                "jdisc.thread_pool.active_threads.max": 1,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 8
+                            },
+                            "dimensions": {
+                                "threadpool": "search-handler",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.4xx.rate": 0
+                            },
+                            "dimensions": {
+                                "httpMethod": "GET",
+                                "requestType": "read",
+                                "protocol": "http1",
+                                "statusCode": "404",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0,
+                                "jdisc.thread_pool.work_queue.capacity.max": 500,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 598,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.active_threads.sum": 0,
+                                "jdisc.thread_pool.active_threads.count": 598,
+                                "jdisc.thread_pool.active_threads.max": 0,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 16
+                            },
+                            "dimensions": {
+                                "threadpool": "feedapi-handler",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "jdisc.gc.ms.average": 0,
+                                "jdisc.gc.ms.max": 0
+                            },
+                            "dimensions": {
+                                "gcName": "G1YoungGeneration",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0.05
+                            },
+                            "dimensions": {
+                                "httpMethod": "GET",
+                                "requestType": "monitoring",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0.0166666666667
+                            },
+                            "dimensions": {
+                                "httpMethod": "POST",
+                                "requestType": "read",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "feed.operations.rate": 0,
+                                "feed.latency.sum": 0,
+                                "feed.latency.count": 0
+                            },
+                            "dimensions": {
+                                "api": "documentV1",
+                                "status": "OK",
+                                "operation": "REMOVE",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0
+                            },
+                            "dimensions": {
+                                "httpMethod": "POST",
+                                "requestType": "write",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0
+                            },
+                            "dimensions": {
+                                "httpMethod": "DELETE",
+                                "requestType": "write",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "hits_per_query.average": 50,
+                                "hits_per_query.sum": 50,
+                                "hits_per_query.count": 1,
+                                "hits_per_query.max": 50,
+                                "queries.rate": 0.0166666666667,
+                                "query_latency.average": 518,
+                                "query_latency.sum": 518,
+                                "query_latency.count": 1,
+                                "query_latency.max": 518,
+                                "query_latency.95percentile": 516,
+                                "query_latency.99percentile": 516,
+                                "totalhits_per_query.average": 3070,
+                                "totalhits_per_query.sum": 3070,
+                                "totalhits_per_query.count": 1,
+                                "totalhits_per_query.max": 3070
+                            },
+                            "dimensions": {
+                                "chain": "vespa",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0,
+                                "jdisc.thread_pool.work_queue.capacity.max": 400,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 598,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.active_threads.sum": 0,
+                                "jdisc.thread_pool.active_threads.count": 598,
+                                "jdisc.thread_pool.active_threads.max": 0,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 8
+                            },
+                            "dimensions": {
+                                "threadpool": "default-pool",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0,
+                                "jdisc.thread_pool.work_queue.capacity.max": 650,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 598,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.active_threads.sum": 0,
+                                "jdisc.thread_pool.active_threads.count": 598,
+                                "jdisc.thread_pool.active_threads.max": 0,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 8
+                            },
+                            "dimensions": {
+                                "threadpool": "default-handler-common",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "jdisc.gc.ms.average": 0,
+                                "jdisc.gc.ms.max": 0
+                            },
+                            "dimensions": {
+                                "gcName": "G1OldGeneration",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0
+                            },
+                            "dimensions": {
+                                "httpMethod": "GET",
+                                "requestType": "read",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "mem.heap.free.average": 1239343854.6666667
+                            },
+                            "dimensions": {
+                                "serviceId": "container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "docproc.documents.sum": 0
+                            },
+                            "dimensions": {
+                                "docproc": "com.yahoo.docprocs.indexing.IndexingProcessor@indexing",
+                                "chain": "indexing",
+                                "serviceId": "container"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "vespa.configserver",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 0,
+                                "memory_rss": 0,
+                                "cpu": 0,
+                                "cpu_util": 0
+                            },
+                            "dimensions": {
+                                "serviceId": "configserver"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0
+                            },
+                            "dimensions": {
+                                "httpMethod": "POST",
+                                "requestType": "write",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "configserver"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0.05
+                            },
+                            "dimensions": {
+                                "httpMethod": "GET",
+                                "requestType": "monitoring",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "configserver"
+                            }
+                        },
+                        {
+                            "values": {
+                                "jdisc.gc.ms.average": 0,
+                                "jdisc.gc.ms.max": 0
+                            },
+                            "dimensions": {
+                                "gcName": "G1OldGeneration",
+                                "serviceId": "configserver"
+                            }
+                        },
+                        {
+                            "values": {
+                                "mem.heap.free.average": 85945744
+                            },
+                            "dimensions": {
+                                "serviceId": "configserver"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0,
+                                "jdisc.thread_pool.work_queue.capacity.max": 650,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 597,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.active_threads.sum": 0,
+                                "jdisc.thread_pool.active_threads.count": 597,
+                                "jdisc.thread_pool.active_threads.max": 0,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 8
+                            },
+                            "dimensions": {
+                                "threadpool": "default-handler-common",
+                                "serviceId": "configserver"
+                            }
+                        },
+                        {
+                            "values": {
+                                "jdisc.gc.ms.average": 0,
+                                "jdisc.gc.ms.max": 0
+                            },
+                            "dimensions": {
+                                "gcName": "G1YoungGeneration",
+                                "serviceId": "configserver"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0,
+                                "jdisc.thread_pool.work_queue.capacity.max": 400,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 597,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.active_threads.sum": 0,
+                                "jdisc.thread_pool.active_threads.count": 597,
+                                "jdisc.thread_pool.active_threads.max": 0,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 8
+                            },
+                            "dimensions": {
+                                "threadpool": "default-pool",
+                                "serviceId": "configserver"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "vespa.logserver",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 924364800,
+                                "memory_rss": 58810368,
+                                "cpu": 0.1435120589994,
+                                "cpu_util": 0.0358780147499
+                            },
+                            "dimensions": {
+                                "serviceId": "logserver"
+                            }
+                        },
+                        {
+                            "values": {},
+                            "dimensions": {
+                                "serviceId": "logserver"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "vespa.searchnode",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 10034896896,
+                                "memory_rss": 1925918720,
+                                "cpu": 3.5399641219852,
+                                "cpu_util": 0.8849910304963
+                            },
+                            "dimensions": {
+                                "serviceId": "searchnode"
+                            }
+                        },
+                        {
+                            "values": {
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.max": 0
+                            },
+                            "dimensions": {
+                                "documenttype": "danswer_chunk",
+                                "rankProfile": "hybrid_search1024",
+                                "serviceId": "searchnode"
+                            }
+                        },
+                        {
+                            "values": {
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.max": 0
+                            },
+                            "dimensions": {
+                                "documenttype": "danswer_chunk",
+                                "rankProfile": "keyword_search",
+                                "serviceId": "searchnode"
+                            }
+                        },
+                        {
+                            "values": {
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.max": 0
+                            },
+                            "dimensions": {
+                                "documenttype": "danswer_chunk",
+                                "rankProfile": "unranked",
+                                "serviceId": "searchnode"
+                            }
+                        },
+                        {
+                            "values": {
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.max": 0
+                            },
+                            "dimensions": {
+                                "documenttype": "danswer_chunk",
+                                "rankProfile": "admin_search",
+                                "serviceId": "searchnode"
+                            }
+                        },
+                        {
+                            "values": {
+                                "content.proton.documentdb.matching.docs_matched.rate": 0,
+                                "content.proton.documentdb.matching.docs_reranked.rate": 0,
+                                "content.proton.documentdb.documents.active.max": 212623,
+                                "content.proton.documentdb.documents.active.last": 212623,
+                                "content.proton.documentdb.documents.ready.max": 212623,
+                                "content.proton.documentdb.documents.ready.last": 212623,
+                                "content.proton.documentdb.documents.total.max": 212623,
+                                "content.proton.documentdb.documents.total.last": 212623,
+                                "content.proton.documentdb.memory_usage.allocated_bytes.last": 1897436513,
+                                "content.proton.documentdb.disk_usage.last": 6071053126,
+                                "content.proton.transactionlog.disk_usage.last": 24194231
+                            },
+                            "dimensions": {
+                                "documenttype": "danswer_chunk",
+                                "serviceId": "searchnode"
+                            }
+                        },
+                        {
+                            "values": {
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.max": 0
+                            },
+                            "dimensions": {
+                                "documenttype": "danswer_chunk",
+                                "rankProfile": "default_rank",
+                                "serviceId": "searchnode"
+                            }
+                        },
+                        {
+                            "values": {
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.max": 0
+                            },
+                            "dimensions": {
+                                "documenttype": "danswer_chunk",
+                                "rankProfile": "default",
+                                "serviceId": "searchnode"
+                            }
+                        },
+                        {
+                            "values": {
+                                "content.proton.resource_usage.disk.average": 0.3144986126052,
+                                "content.proton.resource_usage.memory.average": 0.1146835133269,
+                                "content.proton.resource_usage.feeding_blocked.max": 0,
+                                "content.proton.resource_usage.feeding_blocked.last": 0,
+                                "content.proton.search_protocol.query.latency.average": 0,
+                                "content.proton.search_protocol.query.latency.sum": 0,
+                                "content.proton.search_protocol.query.latency.count": 0,
+                                "content.proton.search_protocol.query.latency.max": 0,
+                                "content.proton.search_protocol.docsum.latency.average": 0,
+                                "content.proton.search_protocol.docsum.latency.sum": 0,
+                                "content.proton.search_protocol.docsum.latency.count": 0,
+                                "content.proton.search_protocol.docsum.latency.max": 0,
+                                "content.proton.search_protocol.docsum.requested_documents.rate": 0,
+                                "vds.bouncer.clock_skew_aborts.count": 0,
+                                "vds.filestor.allthreads.put.count.rate": 0.066666,
+                                "vds.filestor.allthreads.remove.count.rate": 0,
+                                "vds.filestor.allthreads.update.count.rate": 0
+                            },
+                            "dimensions": {
+                                "serviceId": "searchnode"
+                            }
+                        },
+                        {
+                            "values": {
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.rerank_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_setup_time.max": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.average": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.sum": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.count": 0,
+                                "content.proton.documentdb.matching.rank_profile.query_latency.max": 0
+                            },
+                            "dimensions": {
+                                "documenttype": "danswer_chunk",
+                                "rankProfile": "semantic_search1024",
+                                "serviceId": "searchnode"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "vespa.distributor",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 612814848,
+                                "memory_rss": 76406784,
+                                "cpu": 4.480765397648,
+                                "cpu_util": 1.120191349412
+                            },
+                            "dimensions": {
+                                "serviceId": "distributor"
+                            }
+                        },
+                        {
+                            "values": {
+                                "vds.bouncer.clock_skew_aborts.count": 0,
+                                "vds.distributor.docsstored.average": 212623
+                            },
+                            "dimensions": {
+                                "serviceId": "distributor"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "vespa.container-clustercontroller",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 823971840,
+                                "memory_rss": 179736576,
+                                "cpu": 2.6788917679888,
+                                "cpu_util": 0.6697229419972
+                            },
+                            "dimensions": {
+                                "serviceId": "container-clustercontroller"
+                            }
+                        },
+                        {
+                            "values": {
+                                "jdisc.gc.ms.average": 0,
+                                "jdisc.gc.ms.max": 0
+                            },
+                            "dimensions": {
+                                "gcName": "MarkSweepCompact",
+                                "serviceId": "container-clustercontroller"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0,
+                                "jdisc.thread_pool.work_queue.capacity.max": 50,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 598,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.active_threads.sum": 0,
+                                "jdisc.thread_pool.active_threads.count": 598,
+                                "jdisc.thread_pool.active_threads.max": 0,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 1
+                            },
+                            "dimensions": {
+                                "threadpool": "default-pool",
+                                "serviceId": "container-clustercontroller"
+                            }
+                        },
+                        {
+                            "values": {
+                                "cluster-controller.is-master.last": 1,
+                                "cluster-controller.is-master.max": 1
+                            },
+                            "dimensions": {
+                                "controller-index": "0",
+                                "serviceId": "container-clustercontroller",
+                                "clusterId": "danswer_index"
+                            }
+                        },
+                        {
+                            "values": {
+                                "cluster-controller.resource_usage.nodes_above_limit.last": 0,
+                                "cluster-controller.resource_usage.nodes_above_limit.max": 0,
+                                "cluster-controller.resource_usage.max_memory_utilization.last": 0.1433529733589,
+                                "cluster-controller.resource_usage.max_memory_utilization.max": 0.1433529733589,
+                                "cluster-controller.resource_usage.max_disk_utilization.last": 0.4193246520621,
+                                "cluster-controller.resource_usage.max_disk_utilization.max": 0.4193246520621
+                            },
+                            "dimensions": {
+                                "cluster": "danswer_index",
+                                "controller-index": "0",
+                                "serviceId": "container-clustercontroller",
+                                "clusterId": "danswer_index"
+                            }
+                        },
+                        {
+                            "values": {
+                                "cluster-controller.maintenance.count.last": 0,
+                                "cluster-controller.maintenance.count.max": 0,
+                                "cluster-controller.down.count.last": 0,
+                                "cluster-controller.down.count.max": 0,
+                                "cluster-controller.up.count.last": 1,
+                                "cluster-controller.up.count.max": 1
+                            },
+                            "dimensions": {
+                                "node-type": "storage",
+                                "cluster": "danswer_index",
+                                "controller-index": "0",
+                                "serviceId": "container-clustercontroller",
+                                "clusterId": "danswer_index"
+                            }
+                        },
+                        {
+                            "values": {
+                                "mem.heap.free.average": 17389202.666666668
+                            },
+                            "dimensions": {
+                                "serviceId": "container-clustercontroller"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0.0499883360549
+                            },
+                            "dimensions": {
+                                "httpMethod": "GET",
+                                "requestType": "monitoring",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "container-clustercontroller"
+                            }
+                        },
+                        {
+                            "values": {
+                                "cluster-controller.maintenance.count.last": 0,
+                                "cluster-controller.maintenance.count.max": 0,
+                                "cluster-controller.down.count.last": 0,
+                                "cluster-controller.down.count.max": 0,
+                                "cluster-controller.up.count.last": 1,
+                                "cluster-controller.up.count.max": 1
+                            },
+                            "dimensions": {
+                                "node-type": "distributor",
+                                "cluster": "danswer_index",
+                                "controller-index": "0",
+                                "serviceId": "container-clustercontroller",
+                                "clusterId": "danswer_index"
+                            }
+                        },
+                        {
+                            "values": {
+                                "jdisc.gc.ms.average": 10.1666666666667,
+                                "jdisc.gc.ms.max": 17
+                            },
+                            "dimensions": {
+                                "gcName": "Copy",
+                                "serviceId": "container-clustercontroller"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0,
+                                "jdisc.thread_pool.work_queue.capacity.max": 650,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 598,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.active_threads.sum": 0,
+                                "jdisc.thread_pool.active_threads.count": 598,
+                                "jdisc.thread_pool.active_threads.max": 0,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 8
+                            },
+                            "dimensions": {
+                                "threadpool": "default-handler-common",
+                                "serviceId": "container-clustercontroller"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "vespa.slobrok",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 223531008,
+                                "memory_rss": 4505600,
+                                "cpu": 0.6218855889974,
+                                "cpu_util": 0.1554713972494
+                            },
+                            "dimensions": {
+                                "serviceId": "slobrok"
+                            }
+                        },
+                        {
+                            "values": {},
+                            "dimensions": {
+                                "serviceId": "slobrok"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "vespa.metricsproxy-container",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 1031176192,
+                                "memory_rss": 282533888,
+                                "cpu": 3.348614709986,
+                                "cpu_util": 0.8371536774965
+                            },
+                            "dimensions": {
+                                "serviceId": "metricsproxy-container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0.0117056856187,
+                                "jdisc.thread_pool.work_queue.capacity.max": 50,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 598,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.active_threads.sum": 7,
+                                "jdisc.thread_pool.active_threads.count": 598,
+                                "jdisc.thread_pool.active_threads.max": 1,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 1
+                            },
+                            "dimensions": {
+                                "threadpool": "default-pool",
+                                "serviceId": "metricsproxy-container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "jdisc.gc.ms.average": 0,
+                                "jdisc.gc.ms.max": 0
+                            },
+                            "dimensions": {
+                                "gcName": "G1YoungGeneration",
+                                "serviceId": "metricsproxy-container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0.0333333333333
+                            },
+                            "dimensions": {
+                                "httpMethod": "GET",
+                                "requestType": "read",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "metricsproxy-container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "jdisc.gc.ms.average": 0,
+                                "jdisc.gc.ms.max": 0
+                            },
+                            "dimensions": {
+                                "gcName": "G1OldGeneration",
+                                "serviceId": "metricsproxy-container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "mem.heap.free.average": 38524609.333333336
+                            },
+                            "dimensions": {
+                                "serviceId": "metricsproxy-container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "http.status.2xx.rate": 0.0666666666667
+                            },
+                            "dimensions": {
+                                "httpMethod": "GET",
+                                "requestType": "monitoring",
+                                "protocol": "http1",
+                                "statusCode": "200",
+                                "serviceId": "metricsproxy-container"
+                            }
+                        },
+                        {
+                            "values": {
+                                "serverActiveThreads.average": 0,
+                                "jdisc.thread_pool.work_queue.capacity.max": 650,
+                                "jdisc.thread_pool.work_queue.size.sum": 0,
+                                "jdisc.thread_pool.work_queue.size.count": 597,
+                                "jdisc.thread_pool.work_queue.size.max": 0,
+                                "jdisc.thread_pool.work_queue.size.min": 0,
+                                "jdisc.thread_pool.active_threads.sum": 0,
+                                "jdisc.thread_pool.active_threads.count": 597,
+                                "jdisc.thread_pool.active_threads.max": 0,
+                                "jdisc.thread_pool.active_threads.min": 0,
+                                "jdisc.thread_pool.size.max": 8
+                            },
+                            "dimensions": {
+                                "threadpool": "default-handler-common",
+                                "serviceId": "metricsproxy-container"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "vespa.config-sentinel",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 0,
+                                "memory_rss": 0,
+                                "cpu": 0,
+                                "cpu_util": 0
+                            },
+                            "dimensions": {
+                                "serviceId": "config-sentinel"
+                            }
+                        },
+                        {
+                            "values": {
+                                "sentinel.totalRestarts.sum": 0,
+                                "sentinel.totalRestarts.max": 0,
+                                "sentinel.totalRestarts.last": 0
+                            },
+                            "dimensions": {
+                                "serviceId": "config-sentinel"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "vespa.logd",
+                    "timestamp": 1721429837,
+                    "status": {
+                        "code": "up",
+                        "description": "Data collected successfully"
+                    },
+                    "metrics": [
+                        {
+                            "values": {
+                                "memory_virt": 214917120,
+                                "memory_rss": 5320704,
+                                "cpu": 0.3508072553319,
+                                "cpu_util": 0.087701813833
+                            },
+                            "dimensions": {
+                                "serviceId": "logd"
+                            }
+                        },
+                        {
+                            "values": {},
+                            "dimensions": {
+                                "serviceId": "logd"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
