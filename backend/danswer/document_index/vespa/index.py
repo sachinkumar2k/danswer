@@ -188,8 +188,17 @@ def _get_vespa_chunks_by_document_id(
     }
 
     document_chunks: list[dict] = []
+    count = 0
+
     while True:
+        logger.info(f"Iteration number: {count}")
+        count += 1
+        start_time = time.time()
         response = requests.get(url, params=params)
+        end_time = time.time()
+        total_duration = end_time - start_time
+        logger.info(f"Request took {total_duration:.4f} seconds")
+
         try:
             response.raise_for_status()
         except requests.HTTPError as e:
@@ -984,11 +993,16 @@ class VespaIndex(DocumentIndex):
         if not vespa_chunks:
             return []
 
+        logger.info("Start")
+        start_time = time.time()
+
         inference_chunks = [
             _vespa_hit_to_inference_chunk(chunk, null_score=True)
             for chunk in vespa_chunks
         ]
         inference_chunks.sort(key=lambda chunk: chunk.chunk_id)
+        end_time = time.time()
+        logger.info(f"inference sorting took {end_time - start_time}")
         return inference_chunks
 
     def keyword_retrieval(
