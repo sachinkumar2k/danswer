@@ -57,9 +57,9 @@ export function PagesTab({
   const isHistoryEmpty = !existingChats || existingChats.length === 0;
 
   return (
-    <div className="mb-1 ml-3 relative miniscroll overflow-y-auto h-full">
+    <div className="mb-1 ml-3  miniscroll overflow-y-auto h-full">
       {folders && folders.length > 0 && (
-        <div className="py-2 border-b border-border">
+        <div className="py-2 relative border-b border-border">
           <div className="text-xs text-subtle flex pb-0.5 mb-1.5 mt-2 font-bold">
             Folders
           </div>
@@ -112,7 +112,10 @@ export function PagesTab({
                       .map((chat) => {
                         const isSelected = currentChatId === chat.id;
                         return (
-                          <div key={`${chat.id}-${chat.name}`}>
+                          <div
+                            className="relative"
+                            key={`${chat.id}-${chat.name}`}
+                          >
                             <ChatSessionDisplay
                               search={page == "search"}
                               chatSession={chat}

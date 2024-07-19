@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ChatSession } from "../interfaces";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { deleteChatSession, renameChatSession } from "../lib";
 import { DeleteChatModal } from "../modal/DeleteChatModal";
 import { BasicSelectable } from "@/components/BasicClickable";
@@ -19,6 +19,7 @@ import { DefaultDropdownElement } from "@/components/Dropdown";
 import { Popover } from "@/components/popover/Popover";
 import { ShareChatSessionModal } from "../modal/ShareChatSessionModal";
 import { CHAT_SESSION_ID_KEY, FOLDER_ID_KEY } from "@/lib/drag/constants";
+import { usePopup } from "@/components/admin/connectors/Popup";
 
 export function ChatSessionDisplay({
   chatSession,
@@ -34,7 +35,7 @@ export function ChatSessionDisplay({
   skipGradient?: boolean;
 }) {
   const router = useRouter();
-  const [isDeletionModalVisible, setIsDeletionModalVisible] = useState(false);
+
   const [isRenamingChat, setIsRenamingChat] = useState(false);
   const [isMoreOptionsDropdownOpen, setIsMoreOptionsDropdownOpen] =
     useState(false);
@@ -42,6 +43,7 @@ export function ChatSessionDisplay({
   const [chatName, setChatName] = useState(chatSession.name);
   const [delayedSkipGradient, setDelayedSkipGradient] = useState(skipGradient);
 
+  const { popup, setPopup } = usePopup();
   useEffect(() => {
     if (skipGradient) {
       setDelayedSkipGradient(true);
@@ -63,6 +65,53 @@ export function ChatSessionDisplay({
     }
   };
 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+  const deleteConfirmRef = useRef<HTMLDivElement>(null);
+
+  const handleDeleteClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    try {
+      const response = await deleteChatSession(chatSession.id);
+      if (response.ok) {
+        router.push("/chat");
+      } else {
+        alert("Failed to delete chat session");
+      }
+      router.refresh();
+    } catch (error) {
+      setPopup({ message: "Failed to delete folder", type: "error" });
+    } finally {
+      setShowDeleteConfirm(false);
+    }
+  };
+
+  const cancelDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setShowDeleteConfirm(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        deleteConfirmRef.current &&
+        !deleteConfirmRef.current.contains(event.target as Node)
+      ) {
+        setShowDeleteConfirm(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       {isShareModalVisible && (
@@ -72,23 +121,32 @@ export function ChatSessionDisplay({
           onClose={() => setIsShareModalVisible(false)}
         />
       )}
-
-      {isDeletionModalVisible && (
-        <DeleteChatModal
-          onClose={() => setIsDeletionModalVisible(false)}
-          onSubmit={async () => {
-            const response = await deleteChatSession(chatSession.id);
-            if (response.ok) {
-              setIsDeletionModalVisible(false);
-              // go back to the main page
-              router.push("/chat");
-            } else {
-              alert("Failed to delete chat session");
-            }
-          }}
-          chatSessionName={chatSession.name}
-        />
+      {showDeleteConfirm && (
+        <div
+          ref={deleteConfirmRef}
+          className="absolute max-w-xs border z-[100] border-neutral-300 top-0 right-0 w-[250px] -bo-0 top-2 mt-4 p-2 bg-background-100 rounded shadow-lg z-10"
+        >
+          <p className="text-sm mb-2">
+            Are you sure you want to delete this chat session? All the content
+            inside this session will be deleted.
+          </p>
+          <div className="flex justify-end">
+            <button
+              onClick={confirmDelete}
+              className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs mr-2"
+            >
+              Yes
+            </button>
+            <button
+              onClick={cancelDelete}
+              className="bg-gray-300 hover:bg-gray-200 px-2 py-1 rounded text-xs"
+            >
+              No
+            </button>
+          </div>
+        </div>
       )}
+
       <Link
         className="flex my-1 relative"
         key={chatSession.id}
@@ -191,7 +249,7 @@ export function ChatSessionDisplay({
                       </div>
                     </div>
                     <div
-                      onClick={() => setIsDeletionModalVisible(true)}
+                      onClick={(e) => handleDeleteClick(e)}
                       className={`hover:bg-black/10 p-1 -m-1 rounded ml-2`}
                     >
                       <FiTrash size={16} />

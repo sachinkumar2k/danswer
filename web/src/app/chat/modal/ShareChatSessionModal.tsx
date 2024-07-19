@@ -57,7 +57,8 @@ export function ShareChatSessionModal({
   );
 
   return (
-    <ModalWrapper onClose={onClose} modalClassName="max-w-3xl">
+    <div className="fixed inset-0 z-[1000] overflow-auto bg-black bg-opacity-50 flex">
+      {/* <ModalWrapper onClose={onClose} modalClassName=" max-w-3xl"> */}
       <>
         <div className="flex mb-4">
           <h2 className="text-2xl text-emphasis font-bold flex my-auto">
@@ -160,6 +161,7 @@ export function ShareChatSessionModal({
           )}
         </div>
       </>
-    </ModalWrapper>
+      {/* </ModalWrapper> */}
+    </div>
   );
 }
