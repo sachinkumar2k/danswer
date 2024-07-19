@@ -1,4 +1,3 @@
-from danswer.utils.timing import log_function_time
 import concurrent.futures
 import io
 import json
@@ -70,6 +69,7 @@ from danswer.search.retrieval.search_runner import query_processing
 from danswer.search.retrieval.search_runner import remove_stop_words_and_punctuation
 from danswer.utils.batching import batch_generator
 from danswer.utils.logger import setup_logger
+from danswer.utils.timing import log_function_time
 
 logger = setup_logger()
 
@@ -142,6 +142,7 @@ def _vespa_get_updated_at_attribute(t: datetime | None) -> int | None:
 
     return int(t.timestamp())
 
+
 def _get_vespa_chunks_by_document_id(
     document_id: str,
     index_name: str,
@@ -188,6 +189,10 @@ def _get_vespa_chunks_by_document_id(
 
     document_chunks: list[dict] = []
     while True:
+        logger.info(url)
+        logger.info("ascertaining parameters")
+        logger.info(params)
+
         response = requests.get(url, params=params)
         try:
             response.raise_for_status()
@@ -224,7 +229,6 @@ def _get_vespa_chunks_by_document_id(
             break  # Exit loop if no continuation token
 
     return document_chunks
-
 
 
 # def _get_vespa_chunks_by_document_id(

@@ -1,3 +1,4 @@
+import time
 from collections.abc import Callable
 from collections.abc import Iterator
 from typing import cast
@@ -218,17 +219,12 @@ def filter_sections(
     ]
 
 
-import time
-import logging
-
-
 def search_postprocessing(
     search_query: SearchQuery,
     retrieved_sections: list[InferenceSection],
     llm: LLM,
     rerank_metrics_callback: Callable[[RerankMetricsContainer], None] | None = None,
 ) -> Iterator[list[InferenceSection] | list[int]]:
-
     start_time = time.time()
 
     post_processing_tasks: list[FunctionCall] = []
@@ -275,7 +271,7 @@ def search_postprocessing(
         )
 
     parallel_start = time.time()
-    
+
     post_processing_results = (
         run_functions_in_parallel(post_processing_tasks)
         if post_processing_tasks
@@ -323,4 +319,3 @@ def search_postprocessing(
     logger.info(
         f"Total search postprocessing took {time.time() - start_time:.4f} seconds"
     )
-

@@ -1,4 +1,4 @@
-import time 
+import time
 from collections import defaultdict
 from collections.abc import Callable
 from collections.abc import Iterator
@@ -154,11 +154,14 @@ class SearchPipeline:
         )
 
         return cast(list[InferenceChunk], self._retrieved_chunks)
+
     def _get_sections(self) -> list[InferenceSection]:
         start_time = time.time()
 
         if self._retrieved_sections is not None:
-            logger.info(f"Returned cached sections in {time.time() - start_time:.4f} seconds")
+            logger.info(
+                f"Returned cached sections in {time.time() - start_time:.4f} seconds"
+            )
             return self._retrieved_sections
 
         get_chunks_start = time.time()
@@ -195,7 +198,9 @@ class SearchPipeline:
             list_inference_chunks = run_functions_tuples_in_parallel(
                 functions_with_args, allow_failures=False
             )
-            logger.info(f"Parallel processing for full doc took {time.time() - parallel_start:.4f} seconds")
+            logger.info(
+                f"Parallel processing for full doc took {time.time() - parallel_start:.4f} seconds"
+            )
 
             for ind, chunk in enumerate(unique_chunks):
                 inf_chunks = list_inference_chunks[ind]
@@ -209,8 +214,12 @@ class SearchPipeline:
                     logger.warning("Skipped creation of section, no chunks found")
 
             self._retrieved_sections = expanded_inference_sections
-            logger.info(f"Full doc processing took {time.time() - full_doc_start:.4f} seconds")
-            logger.info(f"Total _get_sections (full doc) took {time.time() - start_time:.4f} seconds")
+            logger.info(
+                f"Full doc processing took {time.time() - full_doc_start:.4f} seconds"
+            )
+            logger.info(
+                f"Total _get_sections (full doc) took {time.time() - start_time:.4f} seconds"
+            )
             return expanded_inference_sections
 
         general_flow_start = time.time()
@@ -229,7 +238,9 @@ class SearchPipeline:
             merge_chunk_intervals(ranges) for ranges in doc_chunk_ranges_map.values()
         ]
         flat_ranges = [r for ranges in merged_ranges for r in ranges]
-        logger.info(f"Merging intervals took {time.time() - merge_intervals_start:.4f} seconds")
+        logger.info(
+            f"Merging intervals took {time.time() - merge_intervals_start:.4f} seconds"
+        )
 
         for chunk_range in flat_ranges:
             functions_with_args.append(
@@ -247,7 +258,6 @@ class SearchPipeline:
         list_inference_chunks = run_functions_tuples_in_parallel(
             functions_with_args, allow_failures=False
         )
-
 
         # logger.info(f"Parallel processing for general flow took {time.time() - parallel_start:.4f} seconds")
 
@@ -282,11 +292,17 @@ class SearchPipeline:
             else:
                 logger.warning("Skipped creation of section, no chunks found")
 
-        logger.info(f"Building surroundings took {time.time() - build_surroundings_start:.4f} seconds")
+        logger.info(
+            f"Building surroundings took {time.time() - build_surroundings_start:.4f} seconds"
+        )
 
         self._retrieved_sections = expanded_inference_sections
-        logger.info(f"General flow processing took {time.time() - general_flow_start:.4f} seconds")
-        logger.info(f"Total _get_sections (general flow) took {time.time() - start_time:.4f} seconds")
+        logger.info(
+            f"General flow processing took {time.time() - general_flow_start:.4f} seconds"
+        )
+        logger.info(
+            f"Total _get_sections (general flow) took {time.time() - start_time:.4f} seconds"
+        )
         return expanded_inference_sections
 
     # def _get_sections(self) -> list[InferenceSection]:
