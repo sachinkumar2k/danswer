@@ -183,7 +183,7 @@ def _get_vespa_chunks_by_document_id(
         # for the ACL in the selection. Instead, we have to check as a postfilter
         "selection": selection,
         "continuation": None,
-        "wantedDocumentCount": 1_000,
+        "wantedDocumentCount": 1,
         "fieldSet": field_set,
     }
 
