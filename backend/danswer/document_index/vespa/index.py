@@ -194,6 +194,8 @@ def _get_vespa_chunks_by_document_id(
         logger.info(f"Iteration number: {count}")
         count += 1
         start_time = time.time()
+        logger.info(url)
+        logger.info(params)
         response = requests.get(url, params=params)
         end_time = time.time()
         total_duration = end_time - start_time
