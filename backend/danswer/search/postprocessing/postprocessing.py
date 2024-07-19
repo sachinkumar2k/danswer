@@ -33,9 +33,11 @@ logger = setup_logger()
 
 def _log_top_section_links(search_flow: str, sections: list[InferenceSection]) -> None:
     top_links = [
-        section.center_chunk.source_links[0]
-        if section.center_chunk.source_links is not None
-        else "No Link"
+        (
+            section.center_chunk.source_links[0]
+            if section.center_chunk.source_links is not None
+            else "No Link"
+        )
         for section in sections
     ]
     logger.info(f"Top links from {search_flow} search: {', '.join(top_links)}")
@@ -216,17 +218,25 @@ def filter_sections(
     ]
 
 
+import time
+import logging
+
+
 def search_postprocessing(
     search_query: SearchQuery,
     retrieved_sections: list[InferenceSection],
     llm: LLM,
     rerank_metrics_callback: Callable[[RerankMetricsContainer], None] | None = None,
 ) -> Iterator[list[InferenceSection] | list[int]]:
+
+    start_time = time.time()
+
     post_processing_tasks: list[FunctionCall] = []
 
     rerank_task_id = None
     sections_yielded = False
     if should_rerank(search_query):
+        rerank_start = time.time()
         post_processing_tasks.append(
             FunctionCall(
                 rerank_sections,
@@ -238,16 +248,17 @@ def search_postprocessing(
             )
         )
         rerank_task_id = post_processing_tasks[-1].result_id
+        logger.info(f"Rerank task setup took {time.time() - rerank_start:.4f} seconds")
     else:
-        # NOTE: if we don't rerank, we can return the chunks immediately
-        # since we know this is the final order.
-        # This way the user experience isn't delayed by the LLM step
+        no_rerank_start = time.time()
         _log_top_section_links(search_query.search_type.value, retrieved_sections)
         yield retrieved_sections
         sections_yielded = True
+        logger.info(f"No rerank path took {time.time() - no_rerank_start:.4f} seconds")
 
     llm_filter_task_id = None
     if should_apply_llm_based_relevance_filter(search_query):
+        llm_filter_start = time.time()
         post_processing_tasks.append(
             FunctionCall(
                 filter_sections,
@@ -259,12 +270,19 @@ def search_postprocessing(
             )
         )
         llm_filter_task_id = post_processing_tasks[-1].result_id
+        logger.info(
+            f"LLM filter task setup took {time.time() - llm_filter_start:.4f} seconds"
+        )
 
+    parallel_start = time.time()
     post_processing_results = (
         run_functions_in_parallel(post_processing_tasks)
         if post_processing_tasks
         else {}
     )
+    logger.info(f"Parallel processing took {time.time() - parallel_start:.4f} seconds")
+
+    rerank_processing_start = time.time()
     reranked_sections = cast(
         list[InferenceSection] | None,
         post_processing_results.get(str(rerank_task_id)) if rerank_task_id else None,
@@ -277,7 +295,11 @@ def search_postprocessing(
         else:
             _log_top_section_links(search_query.search_type.value, reranked_sections)
             yield reranked_sections
+    logger.info(
+        f"Rerank processing took {time.time() - rerank_processing_start:.4f} seconds"
+    )
 
+    llm_filter_processing_start = time.time()
     llm_selected_section_ids = (
         [
             section.center_chunk.unique_id
@@ -287,8 +309,17 @@ def search_postprocessing(
         else []
     )
 
-    yield [
+    final_result = [
         index
         for index, section in enumerate(reranked_sections or retrieved_sections)
         if section.center_chunk.unique_id in llm_selected_section_ids
     ]
+    yield final_result
+    logger.info(
+        f"LLM filter processing took {time.time() - llm_filter_processing_start:.4f} seconds"
+    )
+
+    logger.info(
+        f"Total search postprocessing took {time.time() - start_time:.4f} seconds"
+    )
+
