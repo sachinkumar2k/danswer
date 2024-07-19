@@ -1,3 +1,4 @@
+import time 
 from collections import defaultdict
 from collections.abc import Callable
 from collections.abc import Iterator
@@ -153,18 +154,16 @@ class SearchPipeline:
         )
 
         return cast(list[InferenceChunk], self._retrieved_chunks)
-
     def _get_sections(self) -> list[InferenceSection]:
-        """Returns an expanded section from each of the chunks.
-        If whole docs (instead of above/below context) is specified then it will give back all of the whole docs
-        that have a corresponding chunk.
+        start_time = time.time()
 
-        This step should be fast for any document index implementation.
-        """
         if self._retrieved_sections is not None:
+            logger.info(f"Returned cached sections in {time.time() - start_time:.4f} seconds")
             return self._retrieved_sections
 
+        get_chunks_start = time.time()
         retrieved_chunks = self._get_chunks()
+        logger.info(f"Getting chunks took {time.time() - get_chunks_start:.4f} seconds")
 
         above = self.search_query.chunks_above
         below = self.search_query.chunks_below
@@ -172,97 +171,85 @@ class SearchPipeline:
         functions_with_args: list[tuple[Callable, tuple]] = []
         expanded_inference_sections = []
 
-        # Full doc setting takes priority
         if self.search_query.full_doc:
+            full_doc_start = time.time()
             seen_document_ids = set()
             unique_chunks = []
-            # This preserves the ordering since the chunks are retrieved in score order
             for chunk in retrieved_chunks:
                 if chunk.document_id not in seen_document_ids:
                     seen_document_ids.add(chunk.document_id)
                     unique_chunks.append(chunk)
-
                     functions_with_args.append(
                         (
                             self.document_index.id_based_retrieval,
                             (
                                 chunk.document_id,
-                                None,  # Start chunk ind
-                                None,  # End chunk ind
-                                # There is no chunk level permissioning, this expansion around chunks
-                                # can be assumed to be safe
+                                None,
+                                None,
                                 IndexFilters(access_control_list=None),
                             ),
                         )
                     )
 
+            parallel_start = time.time()
             list_inference_chunks = run_functions_tuples_in_parallel(
                 functions_with_args, allow_failures=False
             )
+            logger.info(f"Parallel processing for full doc took {time.time() - parallel_start:.4f} seconds")
 
             for ind, chunk in enumerate(unique_chunks):
                 inf_chunks = list_inference_chunks[ind]
-
                 inference_section = inference_section_from_chunks(
                     center_chunk=chunk,
                     chunks=inf_chunks,
                 )
-
                 if inference_section is not None:
                     expanded_inference_sections.append(inference_section)
                 else:
                     logger.warning("Skipped creation of section, no chunks found")
 
             self._retrieved_sections = expanded_inference_sections
+            logger.info(f"Full doc processing took {time.time() - full_doc_start:.4f} seconds")
+            logger.info(f"Total _get_sections (full doc) took {time.time() - start_time:.4f} seconds")
             return expanded_inference_sections
 
-        # General flow:
-        # - Combine chunks into lists by document_id
-        # - For each document, run merge-intervals to get combined ranges
-        #   - This allows for less queries to the document index
-        # - Fetch all of the new chunks with contents for the combined ranges
-        # - Reiterate the chunks again and map to the results above based on the chunk.
-        #   This maintains the original chunks ordering. Note, we cannot simply sort by score here
-        #   as reranking flow may wipe the scores for a lot of the chunks.
+        general_flow_start = time.time()
         doc_chunk_ranges_map = defaultdict(list)
         for chunk in retrieved_chunks:
-            # The list of ranges for each document is ordered by score
             doc_chunk_ranges_map[chunk.document_id].append(
                 ChunkRange(
                     chunks=[chunk],
                     start=max(0, chunk.chunk_id - above),
-                    # No max known ahead of time, filter will handle this anyway
                     end=chunk.chunk_id + below,
                 )
             )
 
-        # List of ranges, outside list represents documents, inner list represents ranges
+        merge_intervals_start = time.time()
         merged_ranges = [
             merge_chunk_intervals(ranges) for ranges in doc_chunk_ranges_map.values()
         ]
         flat_ranges = [r for ranges in merged_ranges for r in ranges]
+        logger.info(f"Merging intervals took {time.time() - merge_intervals_start:.4f} seconds")
 
         for chunk_range in flat_ranges:
             functions_with_args.append(
                 (
-                    # If Large Chunks are introduced, additional filters need to be added here
                     self.document_index.id_based_retrieval,
                     (
-                        # Only need the document_id here, just use any chunk in the range is fine
                         chunk_range.chunks[0].document_id,
                         chunk_range.start,
                         chunk_range.end,
-                        # There is no chunk level permissioning, this expansion around chunks
-                        # can be assumed to be safe
                         IndexFilters(access_control_list=None),
                     ),
                 )
             )
 
-        # list of list of inference chunks where the inner list needs to be combined for content
+        parallel_start = time.time()
         list_inference_chunks = run_functions_tuples_in_parallel(
             functions_with_args, allow_failures=False
         )
+        logger.info(f"Parallel processing for general flow took {time.time() - parallel_start:.4f} seconds")
+
         flattened_inference_chunks = [
             chunk for sublist in list_inference_chunks for chunk in sublist
         ]
@@ -272,18 +259,15 @@ class SearchPipeline:
             for chunk in flattened_inference_chunks
         }
 
-        # Build the surroundings for all of the initial retrieved chunks
+        build_surroundings_start = time.time()
         for chunk in retrieved_chunks:
             start_ind = max(0, chunk.chunk_id - above)
             end_ind = chunk.chunk_id + below
 
-            # Since the index of the max_chunk is unknown, just allow it to be None and filter after
             surrounding_chunks_or_none = [
                 doc_chunk_ind_to_chunk.get((chunk.document_id, chunk_ind))
-                for chunk_ind in range(start_ind, end_ind + 1)  # end_ind is inclusive
+                for chunk_ind in range(start_ind, end_ind + 1)
             ]
-            # The None will apply to the would be "chunks" that are larger than the index of the last chunk
-            # of the document
             surrounding_chunks = [
                 chunk for chunk in surrounding_chunks_or_none if chunk is not None
             ]
@@ -297,8 +281,158 @@ class SearchPipeline:
             else:
                 logger.warning("Skipped creation of section, no chunks found")
 
+        logger.info(f"Building surroundings took {time.time() - build_surroundings_start:.4f} seconds")
+
         self._retrieved_sections = expanded_inference_sections
+        logger.info(f"General flow processing took {time.time() - general_flow_start:.4f} seconds")
+        logger.info(f"Total _get_sections (general flow) took {time.time() - start_time:.4f} seconds")
         return expanded_inference_sections
+
+    # def _get_sections(self) -> list[InferenceSection]:
+    #     """Returns an expanded section from each of the chunks.
+    #     If whole docs (instead of above/below context) is specified then it will give back all of the whole docs
+    #     that have a corresponding chunk.
+
+    #     This step should be fast for any document index implementation.
+    #     """
+    #     if self._retrieved_sections is not None:
+    #         return self._retrieved_sections
+
+    #     retrieved_chunks = self._get_chunks()
+
+    #     above = self.search_query.chunks_above
+    #     below = self.search_query.chunks_below
+
+    #     functions_with_args: list[tuple[Callable, tuple]] = []
+    #     expanded_inference_sections = []
+
+    #     # Full doc setting takes priority
+    #     if self.search_query.full_doc:
+    #         seen_document_ids = set()
+    #         unique_chunks = []
+    #         # This preserves the ordering since the chunks are retrieved in score order
+    #         for chunk in retrieved_chunks:
+    #             if chunk.document_id not in seen_document_ids:
+    #                 seen_document_ids.add(chunk.document_id)
+    #                 unique_chunks.append(chunk)
+
+    #                 functions_with_args.append(
+    #                     (
+    #                         self.document_index.id_based_retrieval,
+    #                         (
+    #                             chunk.document_id,
+    #                             None,  # Start chunk ind
+    #                             None,  # End chunk ind
+    #                             # There is no chunk level permissioning, this expansion around chunks
+    #                             # can be assumed to be safe
+    #                             IndexFilters(access_control_list=None),
+    #                         ),
+    #                     )
+    #                 )
+
+    #         list_inference_chunks = run_functions_tuples_in_parallel(
+    #             functions_with_args, allow_failures=False
+    #         )
+
+    #         for ind, chunk in enumerate(unique_chunks):
+    #             inf_chunks = list_inference_chunks[ind]
+
+    #             inference_section = inference_section_from_chunks(
+    #                 center_chunk=chunk,
+    #                 chunks=inf_chunks,
+    #             )
+
+    #             if inference_section is not None:
+    #                 expanded_inference_sections.append(inference_section)
+    #             else:
+    #                 logger.warning("Skipped creation of section, no chunks found")
+
+    #         self._retrieved_sections = expanded_inference_sections
+    #         return expanded_inference_sections
+
+    #     # General flow:
+    #     # - Combine chunks into lists by document_id
+    #     # - For each document, run merge-intervals to get combined ranges
+    #     #   - This allows for less queries to the document index
+    #     # - Fetch all of the new chunks with contents for the combined ranges
+    #     # - Reiterate the chunks again and map to the results above based on the chunk.
+    #     #   This maintains the original chunks ordering. Note, we cannot simply sort by score here
+    #     #   as reranking flow may wipe the scores for a lot of the chunks.
+    #     doc_chunk_ranges_map = defaultdict(list)
+    #     for chunk in retrieved_chunks:
+    #         # The list of ranges for each document is ordered by score
+    #         doc_chunk_ranges_map[chunk.document_id].append(
+    #             ChunkRange(
+    #                 chunks=[chunk],
+    #                 start=max(0, chunk.chunk_id - above),
+    #                 # No max known ahead of time, filter will handle this anyway
+    #                 end=chunk.chunk_id + below,
+    #             )
+    #         )
+
+    #     # List of ranges, outside list represents documents, inner list represents ranges
+    #     merged_ranges = [
+    #         merge_chunk_intervals(ranges) for ranges in doc_chunk_ranges_map.values()
+    #     ]
+    #     flat_ranges = [r for ranges in merged_ranges for r in ranges]
+
+    #     for chunk_range in flat_ranges:
+    #         functions_with_args.append(
+    #             (
+    #                 # If Large Chunks are introduced, additional filters need to be added here
+    #                 self.document_index.id_based_retrieval,
+    #                 (
+    #                     # Only need the document_id here, just use any chunk in the range is fine
+    #                     chunk_range.chunks[0].document_id,
+    #                     chunk_range.start,
+    #                     chunk_range.end,
+    #                     # There is no chunk level permissioning, this expansion around chunks
+    #                     # can be assumed to be safe
+    #                     IndexFilters(access_control_list=None),
+    #                 ),
+    #             )
+    #         )
+
+    #     # list of list of inference chunks where the inner list needs to be combined for content
+    #     list_inference_chunks = run_functions_tuples_in_parallel(
+    #         functions_with_args, allow_failures=False
+    #     )
+    #     flattened_inference_chunks = [
+    #         chunk for sublist in list_inference_chunks for chunk in sublist
+    #     ]
+
+    #     doc_chunk_ind_to_chunk = {
+    #         (chunk.document_id, chunk.chunk_id): chunk
+    #         for chunk in flattened_inference_chunks
+    #     }
+
+    #     # Build the surroundings for all of the initial retrieved chunks
+    #     for chunk in retrieved_chunks:
+    #         start_ind = max(0, chunk.chunk_id - above)
+    #         end_ind = chunk.chunk_id + below
+
+    #         # Since the index of the max_chunk is unknown, just allow it to be None and filter after
+    #         surrounding_chunks_or_none = [
+    #             doc_chunk_ind_to_chunk.get((chunk.document_id, chunk_ind))
+    #             for chunk_ind in range(start_ind, end_ind + 1)  # end_ind is inclusive
+    #         ]
+    #         # The None will apply to the would be "chunks" that are larger than the index of the last chunk
+    #         # of the document
+    #         surrounding_chunks = [
+    #             chunk for chunk in surrounding_chunks_or_none if chunk is not None
+    #         ]
+
+    #         inference_section = inference_section_from_chunks(
+    #             center_chunk=chunk,
+    #             chunks=surrounding_chunks,
+    #         )
+    #         if inference_section is not None:
+    #             expanded_inference_sections.append(inference_section)
+    #         else:
+    #             logger.warning("Skipped creation of section, no chunks found")
+
+    #     self._retrieved_sections = expanded_inference_sections
+    #     return expanded_inference_sections
 
     @property
     def reranked_sections(self) -> list[InferenceSection]:
