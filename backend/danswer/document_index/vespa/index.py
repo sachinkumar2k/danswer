@@ -142,7 +142,7 @@ def _vespa_get_updated_at_attribute(t: datetime | None) -> int | None:
     return int(t.timestamp())
 
 
-def _get_vespa_chunks_by_document_id(
+def _get_vespa_chunks_by_document_id_fast(
     document_id: str,
     index_name: str,
     user_access_control_list: list[str] | None = None,
@@ -150,6 +150,73 @@ def _get_vespa_chunks_by_document_id(
     max_chunk_ind: int | None = None,
     field_names: list[str] | None = None,
 ) -> list[dict]:
+    yql = f'select * from sources * where document_id contains "{document_id}"'
+    if min_chunk_ind is not None:
+        yql += f" and chunk_id >= {min_chunk_ind}"
+    if max_chunk_ind is not None:
+        yql += f" and chunk_id <= {max_chunk_ind}"
+
+    params = {
+        "yql": yql,
+        "hits": 300,
+        "timeout": 5000,
+    }
+
+    if field_names:
+        params["fields"] = ",".join(field_names)
+
+    try:
+        response = requests.post(SEARCH_ENDPOINT, json=params)
+        response.raise_for_status()
+    except Exception as e:
+        request_info = f"Headers: {response.request.headers}\nPayload: {params}"
+        response_info = (
+            f"Status Code: {response.status_code}\n"
+            f"Response Content: {response.text}"
+        )
+        error_base = f"Error occurred getting chunk by Document ID {document_id}"
+        logger.error(
+            f"{error_base}:\n"
+            f"{request_info}\n"
+            f"{response_info}\n"
+            f"Exception: {e}"
+        )
+        raise Exception(error_base) from e
+
+    response_json = response.json()
+    hits = response_json["root"].get("children", [])
+
+    document_chunks = []
+    for hit in hits:
+        # TODO
+        # if user_access_control_list:
+        #     document_acl = hit["fields"].get(ACCESS_CONTROL_LIST)
+        #     if not document_acl or not any(
+        #         user_acl_entry in document_acl
+        #         for user_acl_entry in user_access_control_list
+        #     ):
+        #         continue
+        document_chunks.append(hit)
+    return document_chunks
+
+
+def _get_vespa_chunks_by_document_id(
+    document_id: str,
+    index_name: str,
+    user_access_control_list: list[str] | None = None,
+    min_chunk_ind: int | None = None,
+    max_chunk_ind: int | None = None,
+    field_names: list[str] | None = None,
+    fast_mode: bool = False,
+) -> list[dict]:
+    if fast_mode:
+        return _get_vespa_chunks_by_document_id_fast(
+            document_id,
+            index_name,
+            user_access_control_list,
+            min_chunk_ind,
+            max_chunk_ind,
+        )
     # Constructing the URL for the Visit API
     # NOTE: visit API uses the same URL as the document API, but with different params
     url = DOCUMENT_ID_ENDPOINT.format(index_name=index_name)
@@ -222,6 +289,8 @@ def _get_vespa_chunks_by_document_id(
             params["continuation"] = response_data["continuation"]
         else:
             break  # Exit loop if no continuation token
+    # print(document_chunks[:20])
+    print(document_chunks[0].keys())
 
     return document_chunks
 
@@ -629,11 +698,13 @@ def _query_vespa(
 
     params = dict(
         **query_params,
-        **{
-            "presentation.timing": True,
-        }
-        if LOG_VESPA_TIMING_INFORMATION
-        else {},
+        **(
+            {
+                "presentation.timing": True,
+            }
+            if LOG_VESPA_TIMING_INFORMATION
+            else {}
+        ),
     )
 
     response = requests.post(
@@ -660,6 +731,7 @@ def _query_vespa(
     response_json: dict[str, Any] = response.json()
     if LOG_VESPA_TIMING_INFORMATION:
         logger.info("Vespa timing info: %s", response_json.get("timing"))
+
     hits = response_json["root"].get("children", [])
 
     for hit in hits:
@@ -966,6 +1038,7 @@ class VespaIndex(DocumentIndex):
         min_chunk_ind: int | None,
         max_chunk_ind: int | None,
         user_access_control_list: list[str] | None = None,
+        fast_mode: bool = False,
     ) -> list[InferenceChunkUncleaned]:
         document_id = replace_invalid_doc_id_characters(document_id)
 
@@ -975,6 +1048,7 @@ class VespaIndex(DocumentIndex):
             user_access_control_list=user_access_control_list,
             min_chunk_ind=min_chunk_ind,
             max_chunk_ind=max_chunk_ind,
+            fast_mode=fast_mode,
         )
 
         if not vespa_chunks:
@@ -1100,12 +1174,14 @@ class VespaIndex(DocumentIndex):
             "query": query_keywords,
             "input.query(query_embedding)": str(query_embedding),
             "input.query(decay_factor)": str(DOC_TIME_DECAY * time_decay_multiplier),
-            "input.query(alpha)": hybrid_alpha
-            if hybrid_alpha is not None
-            else HYBRID_ALPHA,
-            "input.query(title_content_ratio)": title_content_ratio
-            if title_content_ratio is not None
-            else TITLE_CONTENT_RATIO,
+            "input.query(alpha)": (
+                hybrid_alpha if hybrid_alpha is not None else HYBRID_ALPHA
+            ),
+            "input.query(title_content_ratio)": (
+                title_content_ratio
+                if title_content_ratio is not None
+                else TITLE_CONTENT_RATIO
+            ),
             "hits": num_to_retrieve,
             "offset": offset,
             "ranking.profile": f"hybrid_search{len(query_embedding)}",
