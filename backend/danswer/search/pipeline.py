@@ -256,11 +256,10 @@ class SearchPipeline:
                         # There is no chunk level permissioning, this expansion around chunks
                         # can be assumed to be safe
                         IndexFilters(access_control_list=None),
-                        True
+                        True,
                     ),
                 )
             )
-        print("I am here")
 
         # list of list of inference chunks where the inner list needs to be combined for content
         list_inference_chunks = run_functions_tuples_in_parallel(

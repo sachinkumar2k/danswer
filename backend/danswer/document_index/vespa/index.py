@@ -289,8 +289,6 @@ def _get_vespa_chunks_by_document_id(
             params["continuation"] = response_data["continuation"]
         else:
             break  # Exit loop if no continuation token
-    # print(document_chunks[:20])
-    print(document_chunks[0].keys())
 
     return document_chunks
 
