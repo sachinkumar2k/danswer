@@ -1,3 +1,4 @@
+import time
 from collections import defaultdict
 from collections.abc import Callable
 from collections.abc import Iterator
@@ -157,29 +158,28 @@ class SearchPipeline:
 
     @log_function_time()
     def _get_sections(self) -> list[InferenceSection]:
-        """Returns an expanded section from each of the chunks.
-        If whole docs (instead of above/below context) is specified then it will give back all of the whole docs
-        that have a corresponding chunk.
+        start_time = time.time()
+        logger.info("Starting _get_sections function")
 
-        This step should be fast for any document index implementation.
-        """
         if self._retrieved_sections is not None:
+            logger.info("Returning cached retrieved sections")
             return self._retrieved_sections
 
         retrieved_chunks = self._get_chunks()
+        logger.info(
+            f"Retrieved {len(retrieved_chunks)} chunks in {time.time() - start_time:.2f} seconds"
+        )
 
         above = self.search_query.chunks_above
         below = self.search_query.chunks_below
 
-        # functions_with_args: list[tuple[Callable, tuple]] = []
         expanded_inference_sections = []
 
-        # Full doc setting takes priority
-
         if self.search_query.full_doc:
-            seen_document_ids = set()
+            full_doc_start = time.time()
             unique_chunks = []
             list_inference_chunks = []
+            seen_document_ids = set()
             # This preserves the ordering since the chunks are retrieved in score order
             for chunk in retrieved_chunks:
                 if chunk.document_id not in seen_document_ids:
@@ -218,34 +218,36 @@ class SearchPipeline:
                 else:
                     logger.warning("Skipped creation of section, no chunks found")
 
+            logger.info(
+                f"Processed full_doc in {time.time() - full_doc_start:.2f} seconds"
+            )
             self._retrieved_sections = expanded_inference_sections
+            logger.info(
+                f"Total time for full_doc: {time.time() - start_time:.2f} seconds"
+            )
             return expanded_inference_sections
 
-        # General flow:
-        # - Combine chunks into lists by document_id
-        # - For each document, run merge-intervals to get combined ranges
-        #   - This allows for less queries to the document index
-        # - Fetch all of the new chunks with contents for the combined ranges
-        # - Reiterate the chunks again and map to the results above based on the chunk.
-        #   This maintains the original chunks ordering. Note, we cannot simply sort by score here
-        #   as reranking flow may wipe the scores for a lot of the chunks.
+        chunk_mapping_start = time.time()
         doc_chunk_ranges_map = defaultdict(list)
         for chunk in retrieved_chunks:
-            # The list of ranges for each document is ordered by score
             doc_chunk_ranges_map[chunk.document_id].append(
                 ChunkRange(
                     chunks=[chunk],
                     start=max(0, chunk.chunk_id - above),
-                    # No max known ahead of time, filter will handle this anyway
                     end=chunk.chunk_id + below,
                 )
             )
+        logger.info(
+            f"Created doc_chunk_ranges_map in {time.time() - chunk_mapping_start:.2f} seconds"
+        )
 
-        # List of ranges, outside list represents documents, inner list represents ranges
+        merging_start = time.time()
         merged_ranges = [
             merge_chunk_intervals(ranges) for ranges in doc_chunk_ranges_map.values()
         ]
+        logger.info(f"Merged ranges in {time.time() - merging_start:.2f} seconds")
 
+        flattening_start = time.time()
         flat_ranges = [r for ranges in merged_ranges for r in ranges]
         flattened_inference_chunks = []
         parallel_functions_with_args = []
@@ -265,31 +267,39 @@ class SearchPipeline:
                         ),
                     )
                 )
+        logger.info(
+            f"Flattened ranges and prepared parallel functions in {time.time() - flattening_start:.2f} seconds"
+        )
 
         if parallel_functions_with_args:
+            parallel_start = time.time()
             list_inference_chunks = run_functions_tuples_in_parallel(
                 parallel_functions_with_args, allow_failures=False
             )
             for inference_chunks in list_inference_chunks:
                 flattened_inference_chunks.extend(inference_chunks)
+            logger.info(
+                f"Ran parallel functions in {time.time() - parallel_start:.2f} seconds"
+            )
 
+        mapping_start = time.time()
         doc_chunk_ind_to_chunk = {
             (chunk.document_id, chunk.chunk_id): chunk
             for chunk in flattened_inference_chunks
         }
+        logger.info(
+            f"Created doc_chunk_ind_to_chunk mapping in {time.time() - mapping_start:.2f} seconds"
+        )
 
-        # Build the surroundings for all of the initial retrieved chunks
+        building_start = time.time()
         for chunk in retrieved_chunks:
             start_ind = max(0, chunk.chunk_id - above)
             end_ind = chunk.chunk_id + below
 
-            # Since the index of the max_chunk is unknown, just allow it to be None and filter after
             surrounding_chunks_or_none = [
                 doc_chunk_ind_to_chunk.get((chunk.document_id, chunk_ind))
-                for chunk_ind in range(start_ind, end_ind + 1)  # end_ind is inclusive
+                for chunk_ind in range(start_ind, end_ind + 1)
             ]
-            # The None will apply to the would be "chunks" that are larger than the index of the last chunk
-            # of the document
             surrounding_chunks = [
                 chunk for chunk in surrounding_chunks_or_none if chunk is not None
             ]
@@ -302,8 +312,14 @@ class SearchPipeline:
                 expanded_inference_sections.append(inference_section)
             else:
                 logger.warning("Skipped creation of section, no chunks found")
+        logger.info(
+            f"Built expanded_inference_sections in {time.time() - building_start:.2f} seconds"
+        )
 
         self._retrieved_sections = expanded_inference_sections
+        logger.info(
+            f"Total time for _get_sections: {time.time() - start_time:.2f} seconds"
+        )
         return expanded_inference_sections
 
     @property
