@@ -253,9 +253,12 @@ class SearchPipeline:
         parallel_functions_with_args = []
 
         for chunk_range in flat_ranges:
+            logger.info(f"Chunk has range {chunk_range.start} - {chunk_range.end}")
+
             if chunk_range.start == chunk_range.end:
                 flattened_inference_chunks.append(chunk_range.chunks[0])
             else:
+                logger.info("adding to paralel functions")
                 parallel_functions_with_args.append(
                     (
                         self.document_index.id_based_retrieval,
