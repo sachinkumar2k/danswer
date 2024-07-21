@@ -7,6 +7,8 @@ from typing import cast
 from sqlalchemy.orm import Session
 
 from danswer.chat.models import RelevanceChunk
+from danswer.configs.chat_configs import CONTEXT_CHUNKS_ABOVE
+from danswer.configs.chat_configs import CONTEXT_CHUNKS_BELOW
 from danswer.configs.chat_configs import DISABLE_AGENTIC_SEARCH
 from danswer.configs.chat_configs import MULTILINGUAL_QUERY_EXPANSION
 from danswer.db.embedding_model import get_current_db_embedding_model
@@ -255,7 +257,10 @@ class SearchPipeline:
         for chunk_range in flat_ranges:
             logger.info(f"Chunk has range {chunk_range.start} - {chunk_range.end}")
 
-            if chunk_range.start == chunk_range.end:
+            if (
+                chunk_range.start == chunk_range.end
+                or CONTEXT_CHUNKS_BELOW == CONTEXT_CHUNKS_ABOVE == 0
+            ):
                 flattened_inference_chunks.append(chunk_range.chunks[0])
             else:
                 logger.info("adding to paralel functions")
@@ -270,6 +275,7 @@ class SearchPipeline:
                         ),
                     )
                 )
+
         logger.info(
             f"Flattened ranges and prepared parallel functions in {time.time() - flattening_start:.2f} seconds"
         )
