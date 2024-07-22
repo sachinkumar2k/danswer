@@ -1,7 +1,6 @@
 import { CustomTooltip } from "@/components/tooltip/CustomTooltip";
 import { ReactNode } from "react";
 
-// NOTE: This is the preivous version of the citations which works just fine
 export function Citation({
   children,
   link,
