@@ -115,6 +115,11 @@ def _process_question(question_data: dict, config: dict, question_number: int) -
 
     query = question_data["question"]
     print(f"query: {query}")
+    # context_data_list, answer = send_message_simple(
+    #     query=query,
+    #     only_retrieve_docs=config["only_retrieve_docs"],
+    #     run_suffix=config["run_suffix"],
+    # )
     context_data_list, answer = get_answer_from_query(
         query=query,
         only_retrieve_docs=config["only_retrieve_docs"],
@@ -141,7 +146,7 @@ def _process_and_write_query_results(config: dict) -> None:
     start_time = time.time()
     test_output_folder, questions = _initialize_files(config)
     print("saving test results to folder:", test_output_folder)
-
+    questions = questions * 4
     if config["limit"] is not None:
         questions = questions[: config["limit"]]
 

@@ -247,6 +247,7 @@ def stream_chat_message_objects(
     # user message (e.g. this can only be used for the chat-seeding flow).
     use_existing_user_message: bool = False,
     litellm_additional_headers: dict[str, str] | None = None,
+    return_only_source_docs: bool = False,
 ) -> ChatPacketStream:
     """Streams in order:
     1. [conditional] Retrieved documents if a search needs to be run
@@ -604,6 +605,8 @@ def stream_chat_message_objects(
                         else False,
                     )
                     yield qa_docs_response
+                    if return_only_source_docs:
+                        return  # Exit early if only source docs are requested
                 elif packet.id == SECTION_RELEVANCE_LIST_ID:
                     chunk_indices = packet.response
 
@@ -649,10 +652,13 @@ def stream_chat_message_objects(
                     )
 
             else:
+                if return_only_source_docs:
+                    continue  # Skip non-ToolResponse packets if only source docs are requested
                 if isinstance(packet, ToolCallFinalResult):
                     tool_result = packet
                 yield cast(ChatPacket, packet)
-
+        if return_only_source_docs:
+            return  # Exit if only source docs are requested
     except Exception as e:
         logger.exception("Failed to process chat message")
 

@@ -11,6 +11,8 @@ from danswer.search.models import IndexFilters
 from danswer.search.models import OptionalSearchSetting
 from danswer.search.models import RetrievalDetails
 from danswer.server.documents.models import ConnectorBase
+from danswer.server.query_and_chat.models import ChatSessionCreationRequest
+from ee.danswer.server.query_and_chat.models import BasicCreateChatMessageRequest
 from tests.regression.answer_quality.cli_utils import get_api_server_host_port
 
 GENERAL_HEADERS = {"Content-Type": "application/json"}
@@ -18,6 +20,83 @@ GENERAL_HEADERS = {"Content-Type": "application/json"}
 
 def _api_url_builder(run_suffix: str, api_path: str) -> str:
     return f"http://localhost:{get_api_server_host_port(run_suffix)}" + api_path
+
+
+def _create_new_chat_session(run_suffix: str) -> int:
+    create_chat_request = ChatSessionCreationRequest(
+        persona_id=0,
+        description=None,
+    )
+    body = create_chat_request.dict()
+
+    create_chat_url = _api_url_builder(run_suffix, "/chat/create-chat-session/")
+
+    response_json = requests.post(
+        create_chat_url, headers=GENERAL_HEADERS, json=body
+    ).json()
+    chat_session_id = response_json.get("chat_session_id")
+
+    if isinstance(chat_session_id, int):
+        return chat_session_id
+    else:
+        raise RuntimeError(response_json)
+
+
+def _delete_chat_session(chat_session_id: int, run_suffix: str) -> None:
+    delete_chat_url = _api_url_builder(
+        run_suffix, f"/chat/delete-chat-session/{chat_session_id}"
+    )
+
+    response = requests.delete(delete_chat_url, headers=GENERAL_HEADERS)
+    if response.status_code != 200:
+        raise RuntimeError(response.__dict__)
+
+
+@retry(tries=5, delay=5)
+def send_message_simple(
+    query: str, only_retrieve_docs: bool, run_suffix: str
+) -> tuple[list[str], str]:
+    filters = IndexFilters(
+        source_type=None,
+        document_set=None,
+        time_cutoff=None,
+        tags=None,
+        access_control_list=None,
+    )
+    retrieval_options = RetrievalDetails(
+        run_search=OptionalSearchSetting.ALWAYS,
+        real_time=True,
+        filters=filters,
+        enable_auto_detect_filters=False,
+    )
+
+    chat_session_id = _create_new_chat_session(run_suffix)
+
+    url = _api_url_builder(run_suffix, "/chat/send-message-simple-api/")
+
+    new_message_request = BasicCreateChatMessageRequest(
+        chat_session_id=chat_session_id,
+        message=query,
+        retrieval_options=retrieval_options,
+        query_override=query,
+        only_retrieve_search_docs=only_retrieve_docs,
+    )
+
+    body = new_message_request.dict()
+    body["user"] = None
+    try:
+        response_json = requests.post(url, headers=GENERAL_HEADERS, json=body).json()
+        simple_search_docs = response_json.get("simple_search_docs", [])
+        answer = response_json.get("answer", "")
+    except Exception as e:
+        print("Failed to answer the questions:")
+        print(f"\t {str(e)}")
+        print("trying again")
+        raise e
+
+    # _delete_chat_session(chat_session_id, run_suffix)
+
+    return simple_search_docs, answer
 
 
 @retry(tries=5, delay=5)
@@ -58,7 +137,8 @@ def get_answer_from_query(
     body["user"] = None
     try:
         response_json = requests.post(url, headers=headers, json=body).json()
-        context_data_list = response_json.get("contexts", {}).get("contexts", [])
+        contexts = response_json.get("contexts") or {}
+        context_data_list = contexts.get("contexts", [])
         answer = response_json.get("answer", "") or ""
     except Exception as e:
         print("Failed to answer the questions:")
