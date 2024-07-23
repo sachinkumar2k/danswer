@@ -78,6 +78,16 @@ export const AVAILABLE_MODELS: HostedEmbeddingModel[] = [
     passage_prefix: "passage: ",
   },
   {
+    model_name: "nomic-ai/nomic-embed-text-v1.5",
+    model_dim: 768,
+    normalize: true,
+    description: "Nomic!!",
+    isDefault: true,
+    link: "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5",
+    query_prefix: "search_document: ",
+    passage_prefix: "search_document: ",
+  },
+  {
     model_name: "intfloat/e5-small-v2",
     model_dim: 384,
     normalize: true,
