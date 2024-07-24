@@ -6,7 +6,7 @@ import time
 
 import yaml
 
-from tests.regression.answer_quality.api_utils import get_answer_from_query
+from tests.regression.answer_quality.api_utils import query_answer_with_quote
 from tests.regression.answer_quality.cli_utils import get_current_commit_sha
 from tests.regression.answer_quality.cli_utils import get_docker_container_env_vars
 
@@ -115,23 +115,30 @@ def _process_question(question_data: dict, config: dict, question_number: int) -
 
     query = question_data["question"]
     print(f"query: {query}")
-    context_data_list, answer = get_answer_from_query(
+    query_response = query_answer_with_quote(
         query=query,
         only_retrieve_docs=config["only_retrieve_docs"],
         env_name=config["env_name"],
     )
+
+    contexts = query_response.get("contexts") or {}
+    context_data_list = contexts.get("contexts") or []
+    answer = query_response.get("answer") or ""
+    llm_chunks_indices = query_response.get("llm_chunks_indices") or []
 
     if not context_data_list:
         print("No answer or context found")
     else:
         print(f"answer: {answer[:50]}...")
         print(f"{len(context_data_list)} context docs found")
+        print(f"{len(llm_chunks_indices)} llm_chunks_indices found")
     print("\n")
 
     output = {
         "question_data": question_data,
         "answer": answer,
         "context_data_list": context_data_list,
+        "llm_chunks_indices": llm_chunks_indices,
     }
 
     return output

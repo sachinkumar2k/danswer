@@ -16,6 +16,9 @@ commit_sha: null
 # Whether to launch a web UI for the test
 launch_web_ui: false
 
+# Whether to only run Vespa and Postgres
+only_state: false
+
 # Only retrieve documents, not LLM response
 only_retrieve_docs: false
 

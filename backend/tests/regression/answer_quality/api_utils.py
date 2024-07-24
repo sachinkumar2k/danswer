@@ -24,9 +24,9 @@ def _api_url_builder(env_name: str, api_path: str) -> str:
 
 
 @retry(tries=5, delay=5)
-def get_answer_from_query(
+def query_answer_with_quote(
     query: str, only_retrieve_docs: bool, env_name: str
-) -> tuple[list[str], str]:
+) -> dict:
     filters = IndexFilters(
         source_type=None,
         document_set=None,
@@ -60,16 +60,12 @@ def get_answer_from_query(
     body = new_message_request.dict()
     body["user"] = None
     try:
-        response_json = requests.post(url, headers=headers, json=body).json()
-        context_data_list = response_json.get("contexts", {}).get("contexts", [])
-        answer = response_json.get("answer", "") or ""
+        return requests.post(url, headers=headers, json=body).json()
     except Exception as e:
         print("Failed to answer the questions:")
         print(f"\t {str(e)}")
         print("Try restarting vespa container and trying agian")
         raise e
-
-    return context_data_list, answer
 
 
 @retry(tries=10, delay=10)
