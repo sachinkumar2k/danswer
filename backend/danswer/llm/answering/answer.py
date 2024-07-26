@@ -115,6 +115,7 @@ class Answer:
         # Returns the full document sections text from the search tool
         return_contexts: bool = False,
         skip_gen_ai_answer_generation: bool = False,
+        explicitly_alternate: bool = False,
     ) -> None:
         if single_message_history and message_history:
             raise ValueError(
@@ -139,6 +140,7 @@ class Answer:
         self.prompt_config = prompt_config
 
         self.llm = llm
+
         self.llm_tokenizer = get_default_llm_tokenizer()
 
         self._final_prompt: list[BaseMessage] | None = None

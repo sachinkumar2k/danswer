@@ -4,8 +4,8 @@ import { ChatInputOption } from "./ChatInputOption";
 import { Persona } from "@/app/admin/assistants/interfaces";
 import {
   FilterManager,
+  useLlmOverride,
   getDisplayNameForModel,
-  LlmOverrideManager,
 } from "@/lib/hooks";
 import { SelectedFilterDisplay } from "./SelectedFilterDisplay";
 import { useChatContext } from "@/components/context/ChatContext";
@@ -40,7 +40,6 @@ export function ChatInputBar({
   isStreaming,
   setIsCancelled,
   filterManager,
-  llmOverrideManager,
 
   // assistants
   selectedAssistant,
@@ -66,7 +65,6 @@ export function ChatInputBar({
   isStreaming: boolean;
   setIsCancelled: (value: boolean) => void;
   filterManager: FilterManager;
-  llmOverrideManager: LlmOverrideManager;
   selectedAssistant: Persona;
   alternativeAssistant: Persona | null;
   files: FileDescriptor[];
@@ -103,6 +101,8 @@ export function ChatInputBar({
       }
     }
   };
+
+  const llmOverrideManager = useLlmOverride();
 
   const { llmProviders } = useChatContext();
   const [_, llmName] = getFinalLLM(llmProviders, selectedAssistant, null);

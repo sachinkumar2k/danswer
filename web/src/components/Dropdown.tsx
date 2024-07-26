@@ -7,8 +7,9 @@ import {
   useState,
 } from "react";
 import { ChevronDownIcon } from "./icons/icons";
-import { FiCheck, FiChevronDown } from "react-icons/fi";
+import { FiCheck, FiChevronDown, FiStar } from "react-icons/fi";
 import { Popover } from "./popover/Popover";
+import { Hoverable } from "./Hoverable";
 
 export interface Option<T> {
   name: string;
@@ -242,6 +243,7 @@ export function DefaultDropdownElement({
   onSelect,
   isSelected,
   includeCheckbox = false,
+  gptBox = false,
 }: {
   name: string | JSX.Element;
   icon?: React.FC<{ size?: number; className?: string }>;
@@ -249,6 +251,7 @@ export function DefaultDropdownElement({
   onSelect?: () => void;
   isSelected?: boolean;
   includeCheckbox?: boolean;
+  gptBox?: boolean;
 }) {
   return (
     <div

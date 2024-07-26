@@ -35,6 +35,8 @@ def llm_doc_from_inference_section(inference_section: InferenceSection) -> LlmDo
 def create_chat_chain(
     chat_session_id: int,
     db_session: Session,
+    regenerating: bool | None = None,
+    parent_id: int | None = None,
 ) -> tuple[ChatMessage, list[ChatMessage]]:
     """Build the linear chain of messages without including the root message"""
     mainline_messages: list[ChatMessage] = []
@@ -56,9 +58,10 @@ def create_chat_chain(
         )
 
     current_message: ChatMessage | None = root_message
+
     while current_message is not None:
         child_msg = current_message.latest_child_message
-        if not child_msg:
+        if not child_msg or (parent_id and current_message.id == parent_id):
             break
         current_message = id_to_msg.get(child_msg)
 

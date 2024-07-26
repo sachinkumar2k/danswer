@@ -82,6 +82,7 @@ export interface Message {
   citations?: CitationMap;
   files: FileDescriptor[];
   toolCalls: ToolCallMetadata[];
+  alternate_model?: string;
   // for rebuilding the message tree
   parentMessageId: number | null;
   childrenMessageIds?: number[];
@@ -115,6 +116,7 @@ export interface BackendMessage {
   files: FileDescriptor[];
   tool_calls: ToolCallFinalResult[];
   alternate_assistant_id?: number | null;
+  alternate_model?: string;
 }
 
 export interface DocumentsResponse {

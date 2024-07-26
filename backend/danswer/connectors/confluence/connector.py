@@ -404,6 +404,11 @@ class ConfluenceConnector(LoadConnector, PollConnector):
                         if CONFLUENCE_CONNECTOR_INDEX_ONLY_ACTIVE_PAGES
                         else None
                     ),
+                    status=(
+                        "current"
+                        if CONFLUENCE_CONNECTOR_INDEX_ONLY_ACTIVE_PAGES
+                        else None
+                    ),
                     expand="body.storage.value,version",
                 )
             except Exception:

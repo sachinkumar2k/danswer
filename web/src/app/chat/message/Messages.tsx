@@ -9,6 +9,8 @@ import {
   FiEdit2,
   FiChevronRight,
   FiChevronLeft,
+  FiDatabase,
+  FiStar,
   FiTool,
   FiGlobe,
 } from "react-icons/fi";
@@ -32,6 +34,7 @@ import {
 } from "../tools/constants";
 import { ToolRunDisplay } from "../tools/ToolRunningAnimation";
 import { Hoverable, HoverableIcon } from "@/components/Hoverable";
+
 import { DocumentPreview } from "../files/documents/DocumentPreview";
 import { InMessageImage } from "../files/images/InMessageImage";
 import { CodeBlock } from "./CodeBlock";
@@ -42,7 +45,10 @@ import Prism from "prismjs";
 
 import "prismjs/themes/prism-tomorrow.css";
 import "./custom-code-styles.css";
+import { Button } from "@tremor/react";
+import RegenerateOption from "../RegenerateOptions";
 import { Persona } from "@/app/admin/assistants/interfaces";
+import { LlmOverride } from "@/lib/hooks";
 import { AssistantIcon } from "@/components/assistants/AssistantIcon";
 import { Citation } from "@/components/search/results/Citation";
 import { DocumentMetadataBlock } from "@/components/search/DocumentDisplay";
@@ -112,16 +118,19 @@ export const AIMessage = ({
   toggleDocumentSelection,
   alternativeAssistant,
   docs,
+  regenerate,
+  alternateModel,
   messageId,
   content,
   files,
   selectedDocuments,
   query,
-  personaName,
+  persona,
   citedDocuments,
   toolCall,
   isComplete,
   hasDocs,
+  otherResponseCanSwitchTo = [],
   handleFeedback,
   isCurrentlyShowingRetrieved,
   handleShowRetrieved,
@@ -129,6 +138,7 @@ export const AIMessage = ({
   handleForceSearch,
   retrievalDisabled,
   currentPersona,
+  onResponseSelection,
 }: {
   isActive?: boolean;
   selectedDocuments?: DanswerDocument[] | null;
@@ -136,11 +146,14 @@ export const AIMessage = ({
   docs?: DanswerDocument[] | null;
   alternativeAssistant?: Persona | null;
   currentPersona: Persona;
+  alternateModel?: string;
+  regenerate?: (modelOverRide: LlmOverride) => Promise<void>;
+  otherResponseCanSwitchTo?: number[];
   messageId: number | null;
   content: string | JSX.Element;
   files?: FileDescriptor[];
   query?: string;
-  personaName?: string;
+  persona?: Persona;
   citedDocuments?: [string, DanswerDocument][] | null;
   toolCall?: ToolCallMetadata;
   isComplete?: boolean;
@@ -151,6 +164,7 @@ export const AIMessage = ({
   handleSearchQueryEdit?: (query: string) => void;
   handleForceSearch?: () => void;
   retrievalDisabled?: boolean;
+  onResponseSelection?: (messageId: number) => void;
 }) => {
   const finalContent = content + (!isComplete ? "[*](test)" : "");
 
@@ -174,6 +188,13 @@ export const AIMessage = ({
   citedDocuments?.forEach((doc) => {
     citedDocumentIds.push(doc[1].document_id);
   });
+
+
+
+  // Get response index
+  const currentResponseId = messageId
+    ? otherResponseCanSwitchTo?.indexOf(messageId)
+    : undefined;
 
   if (!isComplete) {
     const trimIncompleteCodeSection = (
@@ -539,6 +560,26 @@ export const AIMessage = ({
                         `}
                       >
                         <TooltipGroup>
+                          {currentResponseId !== undefined &&
+                            onResponseSelection &&
+                            otherResponseCanSwitchTo.length > 1 && (
+                              <CustomTooltip showTick line content="Copy!">
+                                <MessageSwitcher
+                                  currentPage={currentResponseId + 1}
+                                  totalPages={otherResponseCanSwitchTo.length}
+                                  handlePrevious={() =>
+                                    onResponseSelection(
+                                      otherResponseCanSwitchTo[currentResponseId - 1]
+                                    )
+                                  }
+                                  handleNext={() =>
+                                    onResponseSelection(
+                                      otherResponseCanSwitchTo[currentResponseId + 1]
+                                    )
+                                  }
+                                />
+                              </CustomTooltip>
+                            )}
                           <CustomTooltip showTick line content="Copy!">
                             <CopyButton content={content.toString()} />
                           </CustomTooltip>
@@ -561,6 +602,13 @@ export const AIMessage = ({
                     ))}
                 </div>
               </div>
+              {regenerate && (
+                <RegenerateOption
+                  selectedAssistant={persona!}
+                  regenerate={regenerate}
+                  alternateModel={alternateModel}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -770,9 +818,9 @@ export const HumanMessage = ({
                 ) : typeof content === "string" ? (
                   <>
                     {onEdit &&
-                    isHovered &&
-                    !isEditing &&
-                    (!files || files.length === 0) ? (
+                      isHovered &&
+                      !isEditing &&
+                      (!files || files.length === 0) ? (
                       <div className="ml-auto mr-1 my-auto">
                         <Tooltip delayDuration={1000} content={"Edit message"}>
                           <button
@@ -791,14 +839,13 @@ export const HumanMessage = ({
                     )}
 
                     <div
-                      className={`${
-                        !(
-                          onEdit &&
-                          isHovered &&
-                          !isEditing &&
-                          (!files || files.length === 0)
-                        ) && "ml-auto"
-                      } relative max-w-[70%] mb-auto whitespace-break-spaces rounded-3xl bg-user px-5 py-2.5`}
+                      className={`${!(
+                        onEdit &&
+                        isHovered &&
+                        !isEditing &&
+                        (!files || files.length === 0)
+                      ) && "ml-auto"
+                        } relative max-w-[70%] mb-auto whitespace-break-spaces rounded-3xl bg-user px-5 py-2.5`}
                     >
                       {content}
                     </div>
@@ -807,9 +854,9 @@ export const HumanMessage = ({
                 ) : (
                   <>
                     {onEdit &&
-                    isHovered &&
-                    !isEditing &&
-                    (!files || files.length === 0) ? (
+                      isHovered &&
+                      !isEditing &&
+                      (!files || files.length === 0) ? (
                       <div className="my-auto">
                         <Hoverable
                           icon={FiEdit2}
@@ -854,6 +901,6 @@ export const HumanMessage = ({
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };

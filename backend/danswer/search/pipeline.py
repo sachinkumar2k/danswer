@@ -51,6 +51,9 @@ class SearchPipeline:
         retrieval_metrics_callback: (
             Callable[[RetrievalMetricsContainer], None] | None
         ) = None,
+        retrieval_metrics_callback: (
+            Callable[[RetrievalMetricsContainer], None] | None
+        ) = None,
         rerank_metrics_callback: Callable[[RerankMetricsContainer], None] | None = None,
         prompt_config: PromptConfig | None = None,
         pruning_config: DocumentPruningConfig | None = None,

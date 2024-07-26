@@ -11,6 +11,7 @@ import { AIMessage, HumanMessage } from "../../message/Messages";
 import { Button, Callout, Divider } from "@tremor/react";
 import { useRouter } from "next/navigation";
 import { Persona } from "@/app/admin/assistants/interfaces";
+import { useChatContext } from "@/components/context/ChatContext";
 
 function BackToDanswerButton() {
   const router = useRouter();
@@ -54,6 +55,11 @@ export function SharedChatDisplay({
   const messages = buildLatestMessageChain(
     processRawChatHistory(chatSession.messages)
   );
+  let {
+    availablePersonas,
+  } = useChatContext();
+
+  const currentPersona = availablePersonas.find((persona) => persona.id === chatSession.persona_id);
 
   return (
     <div className="w-full overflow-hidden">
@@ -89,7 +95,7 @@ export function SharedChatDisplay({
                       key={message.messageId}
                       messageId={message.messageId}
                       content={message.message}
-                      personaName={chatSession.persona_name}
+                      persona={currentPersona}
                       citedDocuments={getCitedDocumentsFromMessage(message)}
                       isComplete
                     />
