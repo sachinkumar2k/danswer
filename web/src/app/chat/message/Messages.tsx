@@ -58,6 +58,7 @@ import { ValidSources } from "@/lib/types";
 import { Tooltip } from "@/components/tooltip/Tooltip";
 import { useMouseTracking } from "./hooks";
 import { InternetSearchIcon } from "@/components/InternetSearchIcon";
+import CSVGraph from "./CSVrenderer";
 
 const TOOLS_WITH_CUSTOM_HANDLING = [
   SEARCH_TOOL_NAME,
@@ -828,6 +829,9 @@ export const HumanMessage = ({
               </div>
             </div>
           </div>
+
+          <CSVGraph />
+          {/* <CSVGraph fileId="./data.csv" /> */}
 
           <div className="flex flex-col md:flex-row gap-x-0.5 mt-1">
             {currentMessageInd !== undefined &&
