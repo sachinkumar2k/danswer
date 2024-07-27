@@ -1,26 +1,21 @@
 import { FiFileText } from "react-icons/fi";
 import { useState, useRef, useEffect } from "react";
 import { Tooltip } from "@/components/tooltip/Tooltip";
+import { ExpandTwoIcon, OpenSourceIcon } from "@/components/icons/icons";
+import { ToggleRight } from "@phosphor-icons/react";
 
 export function DocumentPreview({
   fileName,
   maxWidth,
   alignBubble,
+  open
 }: {
   fileName: string;
+  open?: () => void
   maxWidth?: string;
   alignBubble?: boolean;
 }) {
-  const [isOverflowing, setIsOverflowing] = useState(false);
   const fileNameRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (fileNameRef.current) {
-      setIsOverflowing(
-        fileNameRef.current.scrollWidth > fileNameRef.current.clientWidth
-      );
-    }
-  }, [fileName]);
 
   return (
     <div
@@ -56,15 +51,20 @@ export function DocumentPreview({
         <Tooltip content={fileName} side="top" align="start">
           <div
             ref={fileNameRef}
-            className={`font-medium text-sm line-clamp-1 break-all ellipses ${
-              maxWidth ? maxWidth : "max-w-48"
-            }`}
+            className={`font-medium text-sm line-clamp-1 break-all ellipses ${maxWidth ? maxWidth : "max-w-48"
+              }`}
           >
             {fileName}
           </div>
         </Tooltip>
+
         <div className="text-subtle text-sm">Document</div>
       </div>
+      {open &&
+        <button onClick={() => open()}>
+          <ExpandTwoIcon />
+        </button>
+      }
     </div>
   );
 }
@@ -123,9 +123,8 @@ export function InputDocumentPreview({
         <Tooltip content={fileName} side="top" align="start">
           <div
             ref={fileNameRef}
-            className={`font-medium text-sm line-clamp-1 break-all ellipses ${
-              maxWidth ? maxWidth : "max-w-48"
-            }`}
+            className={`font-medium text-sm line-clamp-1 break-all ellipses ${maxWidth ? maxWidth : "max-w-48"
+              }`}
           >
             {fileName}
           </div>

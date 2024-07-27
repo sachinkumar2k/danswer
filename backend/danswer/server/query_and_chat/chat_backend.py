@@ -476,7 +476,6 @@ def upload_files_for_chat(
     image_content_types = {"image/jpeg", "image/png", "image/webp"}
     text_content_types = {
         "text/plain",
-        "text/csv",
         "text/markdown",
         "text/x-markdown",
         "text/x-config",
@@ -485,6 +484,9 @@ def upload_files_for_chat(
         "application/xml",
         "text/xml",
         "application/x-yaml",
+    }
+    csv_content_types = {
+        "text/csv",
     }
     document_content_types = {
         "application/pdf",
@@ -497,15 +499,17 @@ def upload_files_for_chat(
 
     allowed_content_types = image_content_types.union(text_content_types).union(
         document_content_types
-    )
+    ).union(csv_content_types)
 
     for file in files:
         if file.content_type not in allowed_content_types:
             if file.content_type in image_content_types:
                 error_detail = "Unsupported image file type. Supported image types include .jpg, .jpeg, .png, .webp."
             elif file.content_type in text_content_types:
-                error_detail = "Unsupported text file type. Supported text types include .txt, .csv, .md, .mdx, .conf, "
+                error_detail = "Unsupported text file type. Supported text types include .txt, .md, .mdx, .conf, "
                 ".log, .tsv."
+            elif file.content_type in csv_content_types:
+                error_detail = "Unsupported csv file type. Supported CSV types include .csv "
             else:
                 error_detail = (
                     "Unsupported document file type. Supported document types include .pdf, .docx, .pptx, .xlsx, "
@@ -531,8 +535,23 @@ def upload_files_for_chat(
             file_type = ChatFileType.IMAGE
         elif file.content_type in document_content_types:
             file_type = ChatFileType.DOC
+        elif file.content_type in csv_content_types:
+            file_type = ChatFileType.CSV
         else:
             file_type = ChatFileType.PLAIN_TEXT
+
+
+    # file_store = get_default_file_store(db_session)
+    # file_type = ChatFileType.IMAGE
+    # file_id = str(uuid.uuid4())
+    # file_store.save_file(
+    #     file_name=file_id,
+    #     content=file.file,
+    #     display_name=file.filename,
+    #     file_origin=FileOrigin.CHAT_UPLOAD,
+    #     file_type=file.content_type or file_type.value,
+    # )
+    # return {"file_id": file_id}
 
         # store the raw file
         file_id = str(uuid.uuid4())
@@ -543,6 +562,7 @@ def upload_files_for_chat(
             file_origin=FileOrigin.CHAT_UPLOAD,
             file_type=file.content_type or file_type.value,
         )
+        print(f"FILE TYPE IS {file_type}")
 
         # if the file is a doc, extract text and store that so we don't need
         # to re-extract it every time we send a message
@@ -569,6 +589,7 @@ def upload_files_for_chat(
             for file_id, file_name, file_type in file_info
         ]
     }
+
 
 
 @router.get("/file/{file_id}")

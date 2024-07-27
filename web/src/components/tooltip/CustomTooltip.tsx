@@ -13,7 +13,7 @@ const TooltipGroupContext = createContext<{
   groupHovered: boolean;
   hoverCountRef: React.MutableRefObject<boolean>;
 }>({
-  setGroupHovered: () => {},
+  setGroupHovered: () => { },
   groupHovered: false,
   hoverCountRef: { current: false },
 });
@@ -41,6 +41,7 @@ export const CustomTooltip = ({
   citation,
   line,
   showTick = false,
+  position,
   delay = 500,
 }: {
   content: string | ReactNode;
@@ -51,6 +52,8 @@ export const CustomTooltip = ({
   showTick?: boolean;
   delay?: number;
   citation?: boolean;
+  position?: 'top' | 'bottom'; // Add this to the prop types
+
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -101,28 +104,37 @@ export const CustomTooltip = ({
         <div
           className={`absolute z-10 ${citation ? "max-w-[350px]" : "w-40"} ${large ? "w-96" : line && "max-w-64 w-auto"} 
               left-1/2 transform -translate-x-1/2 mt-2 text-sm 
-              ${
-                light
-                  ? "text-gray-800 bg-background-200"
-                  : "text-white bg-background-800"
-              } 
+              ${position === 'top' ? 'bottom-full mb-2' : 'mt-2'}
+              ${light
+              ? "text-gray-800 bg-background-200"
+              : "text-white bg-background-800"
+            } 
               rounded-lg shadow-lg`}
         >
-          {showTick && (
+          {showTick &&
+            position != "top" ? (
             <div
               className={`absolute w-3 h-3 -top-1.5 left-1/2 transform -translate-x-1/2 rotate-45 
                   ${light ? "bg-background-200" : "bg-background-800"}`}
             />
-          )}
+          )
+            :
+            <div
+              className={`absolute w-3 h-3 top-1.5 left-1/2 transform -translate-x-1/2 rotate-45 
+              ${light ? "bg-background-200" : "bg-background-800"}`}
+            />
+
+
+          }
           <div
             className={` relative ${line ? "" : "flex"} p-2`}
             style={
               line
                 ? {
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }
                 : {}
             }
           >

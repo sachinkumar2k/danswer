@@ -59,6 +59,7 @@ import { Tooltip } from "@/components/tooltip/Tooltip";
 import { useMouseTracking } from "./hooks";
 import { InternetSearchIcon } from "@/components/InternetSearchIcon";
 import CSVGraph from "./CSVrenderer";
+import { DISABLED_CSV_DISPLAY, LOGOUT_DISABLED } from "@/lib/constants";
 
 const TOOLS_WITH_CUSTOM_HANDLING = [
   SEARCH_TOOL_NAME,
@@ -74,8 +75,13 @@ function FileDisplay({
   alignBubble?: boolean;
 }) {
   const imageFiles = files.filter((file) => file.type === ChatFileType.IMAGE);
-  const nonImgFiles = files.filter((file) => file.type !== ChatFileType.IMAGE);
+  const nonImgFiles = files.filter((file) => file.type !== ChatFileType.IMAGE && file.type !== ChatFileType.CSV);
+  const csvImgFiles = files.filter((file) => file.type == ChatFileType.CSV);
+  console.log("HI")
+  console.log(files)
+  console.log(csvImgFiles)
 
+  const [close, setClose] = useState(true)
   return (
     <>
       {nonImgFiles && nonImgFiles.length > 0 && (
@@ -89,6 +95,30 @@ function FileDisplay({
                     maxWidth="max-w-64"
                     alignBubble={alignBubble}
                   />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      {csvImgFiles && csvImgFiles.length > 0 && (
+        <div className={` ${alignBubble && "ml-auto"} mt-2 auto mb-4`}>
+          <div className="flex flex-col gap-2">
+            {csvImgFiles.map((file) => {
+              return (
+                <div key={file.id} className="w-fit">
+                  {close && !DISABLED_CSV_DISPLAY ?
+                    <CSVGraph close={() => setClose(false)} csvFileDescriptor={file} />
+                    :
+                    <DocumentPreview
+                      open={DISABLED_CSV_DISPLAY ? undefined : () => setClose(true)}
+                      fileName={file.name || file.id}
+                      maxWidth="max-w-64"
+                      alignBubble={alignBubble}
+                    />}
+                  {/* <CSVGraph fileId="b6f4d75d-12a7-491a-9447-542c82c47319"/> */}
+
+
                 </div>
               );
             })}
@@ -531,12 +561,12 @@ export const AIMessage = ({
                       <div
                         ref={hoverElementRef}
                         className={`
-                        absolute -bottom-2
-                        invisible ${isHovering && "!visible"}
-                        opacity-0 ${isHovering && "!opacity-100"}
-                        translate-y-2 ${isHovering && "!translate-y-0"}
-                        transition-transform duration-300 ease-in-out 
-                        flex md:flex-row gap-x-0.5 bg-background-125/40 p-1.5 rounded-lg
+                          absolute -bottom-5
+                          invisible ${isHovering && "!visible"}
+                          opacity-0 ${isHovering && "!opacity-100"}
+                          translate-y-2 ${isHovering && "!translate-y-0"}
+                          transition-transform duration-300 ease-in-out 
+                          flex md:flex-row gap-x-0.5 bg-background-125/40 p-1.5 rounded-lg
                         `}
                       >
                         <TooltipGroup>
@@ -681,24 +711,25 @@ export const HumanMessage = ({
                       <textarea
                         ref={textareaRef}
                         className={`
-                      m-0 
-                      w-full 
-                      h-auto
-                      shrink
-                      border-0
-                      rounded-lg 
-                      overflow-y-hidden
-                      bg-background-emphasis 
-                      whitespace-normal 
-                      break-word
-                      overscroll-contain
-                      outline-none 
-                      placeholder-gray-400 
-                      resize-none
-                      pl-4
-                      overflow-y-auto
-                      pr-12 
-                      py-4`}
+                          m-0 
+                          w-full 
+                          h-auto
+                          shrink
+                          border-0
+                          rounded-lg 
+                          overflow-y-hidden
+                          bg-background-emphasis 
+                          whitespace-normal 
+                          break-word
+                          overscroll-contain
+                          outline-none 
+                          placeholder-gray-400 
+                          resize-none
+                          pl-4
+                          overflow-y-auto
+                          pr-12 
+                          py-4
+                          `}
                         aria-multiline
                         role="textarea"
                         value={editedContent}
@@ -771,9 +802,9 @@ export const HumanMessage = ({
                 ) : typeof content === "string" ? (
                   <>
                     {onEdit &&
-                    isHovered &&
-                    !isEditing &&
-                    (!files || files.length === 0) ? (
+                      isHovered &&
+                      !isEditing &&
+                      (!files || files.length === 0) ? (
                       <div className="ml-auto mr-1 my-auto">
                         <Tooltip delayDuration={1000} content={"Edit message"}>
                           <button
@@ -792,14 +823,13 @@ export const HumanMessage = ({
                     )}
 
                     <div
-                      className={`${
-                        !(
-                          onEdit &&
-                          isHovered &&
-                          !isEditing &&
-                          (!files || files.length === 0)
-                        ) && "ml-auto"
-                      } relative max-w-[70%] mb-auto whitespace-break-spaces rounded-3xl bg-user px-5 py-2.5`}
+                      className={`${!(
+                        onEdit &&
+                        isHovered &&
+                        !isEditing &&
+                        (!files || files.length === 0)
+                      ) && "ml-auto"
+                        } relative max-w-[70%] mb-auto whitespace-break-spaces rounded-3xl bg-user px-5 py-2.5`}
                     >
                       {content}
                     </div>
@@ -808,9 +838,9 @@ export const HumanMessage = ({
                 ) : (
                   <>
                     {onEdit &&
-                    isHovered &&
-                    !isEditing &&
-                    (!files || files.length === 0) ? (
+                      isHovered &&
+                      !isEditing &&
+                      (!files || files.length === 0) ? (
                       <div className="my-auto">
                         <Hoverable
                           icon={FiEdit2}
@@ -830,7 +860,7 @@ export const HumanMessage = ({
             </div>
           </div>
 
-          <CSVGraph />
+          {/* <CSVGraph /> */}
           {/* <CSVGraph fileId="./data.csv" /> */}
 
           <div className="flex flex-col md:flex-row gap-x-0.5 mt-1">
