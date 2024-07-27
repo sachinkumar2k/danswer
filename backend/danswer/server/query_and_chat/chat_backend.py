@@ -541,17 +541,6 @@ def upload_files_for_chat(
             file_type = ChatFileType.PLAIN_TEXT
 
 
-    # file_store = get_default_file_store(db_session)
-    # file_type = ChatFileType.IMAGE
-    # file_id = str(uuid.uuid4())
-    # file_store.save_file(
-    #     file_name=file_id,
-    #     content=file.file,
-    #     display_name=file.filename,
-    #     file_origin=FileOrigin.CHAT_UPLOAD,
-    #     file_type=file.content_type or file_type.value,
-    # )
-    # return {"file_id": file_id}
 
         # store the raw file
         file_id = str(uuid.uuid4())
