@@ -17,6 +17,13 @@ from danswer.configs.chat_configs import BING_API_KEY
 from danswer.configs.chat_configs import CHAT_TARGET_CHUNK_PERCENTAGE
 from danswer.configs.chat_configs import DISABLE_LLM_CHOOSE_SEARCH
 from danswer.configs.chat_configs import MAX_CHUNKS_FED_TO_CHAT
+from danswer.tools.graphing.models import GraphGenerationDisplay
+from danswer.file_store.utils import save_base64_image
+
+from danswer.tools.graphing.graphing_tool import GraphingResponse
+from danswer.tools.graphing.graphing_tool import GraphingTool
+from danswer.tools.graphing.models import GRAPHING_RESPONSE_ID
+
 from danswer.configs.constants import MessageType
 from danswer.configs.model_configs import GEN_AI_TEMPERATURE
 from danswer.db.chat import attach_files_to_chat_message
@@ -238,6 +245,8 @@ ChatPacket = (
     | CitationInfo
     | ImageGenerationDisplay
     | CustomToolResponse
+    | GraphGenerationDisplay
+
 )
 ChatPacketStream = Iterator[ChatPacket]
 
@@ -478,6 +487,12 @@ def stream_chat_message_objects(
             # handle in-code tools specially
             if db_tool_model.in_code_tool_id:
                 tool_cls = get_built_in_tool_by_id(db_tool_model.id, db_session)
+                if (
+                    tool_cls.__name__ == GraphingTool.__name__
+                    and not latest_query_files
+                ):
+                    tool_dict[db_tool_model.id] = [GraphingTool(output_dir="output")]
+
                 if tool_cls.__name__ == SearchTool.__name__ and not latest_query_files:
                     search_tool = SearchTool(
                         db_session=db_session,
@@ -630,6 +645,22 @@ def stream_chat_message_objects(
                     yield LLMRelevanceFilterResponse(
                         relevant_chunk_indices=chunk_indices
                     )
+                elif packet.id == GRAPHING_RESPONSE_ID:
+                    graph_generation = cast(GraphingResponse, packet.response)
+                    # print(graph_generation)
+                    # print(graph_generation)
+
+                    # file_id = save_base64_image(graph_generation.graph_result.image)
+                    # ai_message_files = [
+                    #     FileDescriptor(id=str(file_id), type=ChatFileType.IMAGE)
+                    # ]
+                    yield GraphGenerationDisplay(file_id=graph_generation.extra_graph_display.file_id, line_graph=graph_generation.extra_graph_display.line_graph)
+
+                    
+                    # yield ImageGenerationDisplay(file_ids=[file_id])
+
+
+
                 elif packet.id == IMAGE_GENERATION_RESPONSE_ID:
                     img_generation_response = cast(
                         list[ImageGenerationResponse], packet.response

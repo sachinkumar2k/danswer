@@ -33,3 +33,5 @@ export interface PolarChartDataPoint {
     angle: number;
     radius: number;
 }
+
+export type ChartType = "line" | "bar" | "radial" | "other"

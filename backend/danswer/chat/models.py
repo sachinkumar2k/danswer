@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Any
 
 from pydantic import BaseModel
+from danswer.tools.graphing.models import GraphGenerationDisplay
 
 from danswer.configs.constants import DocumentSource
 from danswer.search.enums import QueryFlow
@@ -121,6 +122,9 @@ class CustomToolResponse(BaseModel):
     tool_name: str
 
 
+
+
+
 AnswerQuestionPossibleReturn = (
     DanswerAnswerPiece
     | DanswerQuotes
@@ -129,6 +133,7 @@ AnswerQuestionPossibleReturn = (
     | ImageGenerationDisplay
     | CustomToolResponse
     | StreamingError
+    | GraphGenerationDisplay
 )
 
 

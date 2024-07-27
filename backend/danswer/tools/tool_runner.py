@@ -11,9 +11,10 @@ from danswer.utils.threadpool_concurrency import run_functions_tuples_in_paralle
 
 
 class ToolRunner:
-    def __init__(self, tool: Tool, args: dict[str, Any]):
+    def __init__(self, tool: Tool, args: dict[str, Any], llm: LLM):
         self.tool = tool
         self.args = args
+        self._llm = llm
 
         self._tool_responses: list[ToolResponse] | None = None
 
@@ -26,7 +27,7 @@ class ToolRunner:
             return
 
         tool_responses: list[ToolResponse] = []
-        for tool_response in self.tool.run(**self.args):
+        for tool_response in self.tool.run(llm=self._llm, **self.args):
             yield tool_response
             tool_responses.append(tool_response)
 
@@ -42,7 +43,6 @@ class ToolRunner:
             tool_args=self.args,
             tool_result=self.tool.final_result(*self.tool_responses()),
         )
-
 
 def check_which_tools_should_run_for_non_tool_calling_llm(
     tools: list[Tool], query: str, history: list[PreviousMessage], llm: LLM

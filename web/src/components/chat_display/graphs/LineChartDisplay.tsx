@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ClipboardCheckIcon, DownloadIcon, TrendingUp } from "lucide-react"
+import { PickaxeIcon, TrendingUp } from "lucide-react"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import {
     ChartConfig,
@@ -8,59 +8,86 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import { CardFooter } from '@/components/ui/card';
-import { ClickupIcon, DexpandTwoIcon, DownloadCSVIcon, ExpandTwoIcon, OpenIcon, PaintingIcon, PaintingIconSkeleton } from '@/components/icons/icons';
+import { DexpandTwoIcon, DownloadCSVIcon, ExpandTwoIcon, OpenIcon, PaintingIcon, PaintingIconSkeleton } from '@/components/icons/icons';
 import { CustomTooltip, TooltipGroup } from '@/components/tooltip/CustomTooltip';
 import { Modal } from '@/components/Modal';
-import { ChartDataPoint, Data, PlotData } from './types';
-// Assuming the JSON file is in the public folder
+import { ChartDataPoint, ChartType, Data, PlotData } from './types';
+import { SelectionBackground } from '@phosphor-icons/react';
 
-
-
-export function ModalChartWrapper({ children, plotDataJson }: { children: JSX.Element, plotDataJson: Data }) {
-
+export function ModalChartWrapper({ children, fileId, chartType }: { children: JSX.Element, fileId: string, chartType: ChartType }) {
     const [expanded, setExpanded] = useState(false)
     const expand = () => {
         setExpanded(expanded => !expanded)
     }
 
-
     return (
-
         <>
             {expanded ?
                 <Modal onOutsideClick={() => setExpanded(false)} className='animate-all ease-in !p-0'>
-                    <ChartWrapper expand={expand} expanded={expanded} plotDataJson={plotDataJson}>
-                        {/* <LineChartDisplay plotDataJson={plotDataJson} /> */}
+                    <ChartWrapper chartType={chartType} expand={expand} expanded={expanded} fileId={fileId}>
                         {children}
                     </ChartWrapper>
                 </Modal>
                 :
-
-                <ChartWrapper expand={expand} expanded={expanded} plotDataJson={plotDataJson}>
-                    {/* <LineChartDisplay plotDataJson={plotDataJson} /> */}
+                <ChartWrapper chartType={chartType} expand={expand} expanded={expanded} fileId={fileId}>
                     {children}
-
                 </ChartWrapper>
-                // <CsvSection close={close} expanded={expanded} expand={expand} csvFileDescriptor={csvFileDescriptor} />
             }
         </>
-
     )
 }
-export function ChartWrapper({ expanded, children, plotDataJson, expand }: { expanded: boolean, children: JSX.Element, plotDataJson: Data, expand: () => void }) {
-    return (
-        <div className="bg-background-50 mt-24 rounded-lg shadow-md ">
-            <div className="p-4">
-                <div className='flex pb-2 items-center justify-between'>
 
-                    <h2 className="text-xl font-semibold mb-2">{(plotDataJson).title}</h2>
+export function ChartWrapper({ expanded, children, fileId, chartType, expand }: { expanded: boolean, children: JSX.Element, chartType: ChartType, fileId: string, expand: () => void }) {
+    const [plotDataJson, setPlotDataJson] = useState<Data | null>(null);
+
+    useEffect(() => {
+        fetchPlotData(fileId);
+    }, [fileId]);
+
+    const fetchPlotData = async (id: string) => {
+        if (chartType == 'other') {
+            setPlotDataJson({ "title": "Uploaded Chart" })
+        }
+        else {
+            try {
+                const response = await fetch(`api/chat/file/${id}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch plot data');
+                }
+                const data = await response.json();
+                setPlotDataJson(data);
+            } catch (error) {
+                console.error("Error fetching plot data:", error);
+            }
+        }
+    };
+
+    const downloadFile = () => {
+        if (!fileId) return;
+        // Implement download functionality here
+    }
+
+    if (!plotDataJson) {
+        return <div>Loading...</div>;
+    }
+    return (
+        <div className="bg-background-50  group rounded-lg shadow-md relative">
+            <div className="relative p-4">
+                <div className='relative flex pb-2 items-center justify-between'>
+                    <h2 className="text-xl font-semibold mb-2">{plotDataJson.title}</h2>
                     <div className='flex gap-x-2'>
                         <TooltipGroup>
+                            {chartType != "other" &&
+                                <CustomTooltip showTick line position='top' content="Download file">
+                                    <button onClick={() => downloadFile()}>
+                                        <PaintingIconSkeleton className='cursor-pointer transition-colors duration-300 hover:text-neutral-800 h-6 w-6 text-neutral-400' />
+                                    </button>
+                                </CustomTooltip>
+                            }
+
                             <CustomTooltip showTick line position='top' content="Download file">
-                                <button
-                                // onClick={() => downloadFile()}
-                                >
-                                    <DownloadCSVIcon className='cursor-pointer transition-colors duration-300 hover:text-neutral-800 h-6 w-6 text-neutral-400' />
+                                <button onClick={() => downloadFile()}>
+                                    <DownloadCSVIcon className='cursor-pointer ml-4 transition-colors duration-300 hover:text-neutral-800 h-6 w-6 text-neutral-400' />
                                 </button>
                             </CustomTooltip>
                             <CustomTooltip line position='top' content={expanded ? "Minimize" : "Full screen"}>
@@ -72,66 +99,65 @@ export function ChartWrapper({ expanded, children, plotDataJson, expand }: { exp
                                     }
                                 </button>
                             </CustomTooltip>
-                            <CustomTooltip line position='top' content="No vis">
-                                <button onClick={() => close()}>
-                                    <OpenIcon className='transition-colors duration-300 ml-4 hover:text-neutral-800 h-6 w-6 cursor-pointer text-neutral-400' />
-                                </button>
-                            </CustomTooltip>
+
                         </TooltipGroup>
-
-                        {/* <button className='group'>
-                            <PaintingIconSkeleton className='h-4 w-4 group-hover:text-neutral-800 text-neutral-600' />
-                        </button>
-                        <button className='group'>
-                            <DownloadCSVIcon className='h-4 w-4 group-hover:text-neutral-800 text-neutral-600' />
-                        </button>
-                        <button className='group'>
-                            <ExpandTwoIcon className='h-4 w-4 group-hover:text-neutral-800 text-neutral-600' />
-                        </button> */}
-
                     </div>
                 </div>
-
-                {/* <p className="text-sm text-gray-500 mb-4">{(plotDataJson).xlabel}</p> */}
-
                 {children}
+                {chartType === "other" && (
+                    <div className="absolute bottom-6 right-6 p-1.5 rounded flex gap-x-2 items-center border border-neutral-200 bg-neutral-50  opacity-0 transition-opacity duration-300 ease-in-out text-sm text-gray-500 group-hover:opacity-100">
+                        <SelectionBackground />
+                        Interactive charts of this type are not supported yet
+                    </div>
+                )}
             </div>
             <CardFooter className="flex-col items-start gap-2 text-sm">
                 <div className="flex gap-2 font-medium leading-none">
                     Data from Matplotlib plot <TrendingUp className="h-4 w-4" />
                 </div>
             </CardFooter>
-        </div>
 
+        </div>
     )
 }
 
-
-
-export function LineChartDisplay({ plotDataJson }: { plotDataJson: PlotData }) {
+export function LineChartDisplay({ fileId }: { fileId: string }) {
     const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
     const [chartConfig, setChartConfig] = useState<ChartConfig>({});
 
     useEffect(() => {
-        const transformedData: ChartDataPoint[] = (plotDataJson as PlotData).data[0].x.map((x, index) => ({
-            x: x,
-            y: (plotDataJson as PlotData).data[0].y[index]
-        }));
+        fetchPlotData(fileId);
+    }, [fileId]);
 
-        setChartData(transformedData);
-
-        const config: ChartConfig = {
-            y: {
-                label: (plotDataJson as PlotData).data[0].label,
-                color: (plotDataJson as PlotData).data[0].color,
+    const fetchPlotData = async (id: string) => {
+        try {
+            const response = await fetch(`api/chat/file/${id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch plot data');
             }
-        };
+            const plotDataJson: PlotData = await response.json();
 
-        setChartConfig(config);
-    }, []);
+            const transformedData: ChartDataPoint[] = plotDataJson.data[0].x.map((x, index) => ({
+                x: x,
+                y: plotDataJson.data[0].y[index]
+            }));
+
+            setChartData(transformedData);
+
+            const config: ChartConfig = {
+                y: {
+                    label: plotDataJson.data[0].label,
+                    color: plotDataJson.data[0].color,
+                }
+            };
+
+            setChartConfig(config);
+        } catch (error) {
+            console.error("Error fetching plot data:", error);
+        }
+    };
 
     return (
-
         <div className="w-full h-full">
             <ChartContainer config={chartConfig}>
                 <LineChart
@@ -171,6 +197,5 @@ export function LineChartDisplay({ plotDataJson }: { plotDataJson: PlotData }) {
                 </LineChart>
             </ChartContainer>
         </div>
-
     )
 }

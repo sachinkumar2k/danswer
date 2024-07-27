@@ -3,6 +3,7 @@ import {
   Filters,
   SearchDanswerDocument,
 } from "@/lib/search/interfaces";
+import { graph } from "./message/Messages";
 
 export enum RetrievalType {
   None = "none",
@@ -88,6 +89,7 @@ export interface Message {
   childrenMessageIds?: number[];
   latestChildMessageId?: number | null;
   alternateAssistantID?: number | null;
+  graphs?: graph[]
 }
 
 export interface BackendChatSession {

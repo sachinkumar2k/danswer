@@ -1,93 +1,71 @@
-import React, { useEffect, useState } from 'react';
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart";
+import React, { useState, useEffect } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { CardContent } from '@/components/ui/card';
 
-// Assuming the JSON file is in the public folder
-
-interface BarPlotData {
-    data: Array<{
-        [key: string]: number | string;
-    }>;
-    title: string;
-    xLabel: string;
-    yLabel: string;
-    config: {
-        [key: string]: {
-            label: string;
-            color: string;
-        };
-    };
+interface BarDataPoint {
+    x: number;
+    y: number;
+    width: number;
+    color: string;
 }
 
+interface BarPlotData {
+    data: BarDataPoint[];
+    title: string;
+    xlabel: string;
+    ylabel: string;
+    xticks: number[];
+    xticklabels: string[];
+}
 
-export function BarChartDisplay({ barPlotJson }: { barPlotJson: BarPlotData }) {
-    const [chartData, setChartData] = useState<any[]>([]);
-    const [chartConfig, setChartConfig] = useState<ChartConfig>({});
+export function BarChartDisplay({ fileId }: { fileId: string }) {
+    const [barPlotData, setBarPlotData] = useState<BarPlotData | null>(null);
 
     useEffect(() => {
-        setChartData(barPlotJson.data);
-        setChartConfig(barPlotJson.config);
-    }, []);
+        fetchPlotData(fileId);
+    }, [fileId]);
 
-    const dataKeys = Object.keys(chartConfig);
+    const fetchPlotData = async (id: string) => {
+        try {
+            const response = await fetch(`api/chat/file/${id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch plot data');
+            }
+            const data: BarPlotData = await response.json();
+            setBarPlotData(data);
+        } catch (error) {
+            console.error("Error fetching plot data:", error);
+        }
+    };
+
+    if (!barPlotData) {
+        return <div>Loading...</div>;
+    }
+
+    // Transform data to match Recharts expected format
+    const transformedData = barPlotData.data.map((point, index) => ({
+        name: barPlotData.xticklabels[index] || point.x.toString(),
+        value: point.y
+    }));
 
     return (
-
-        <CardContent>
-            <ChartContainer config={chartConfig}>
-                <BarChart
-                    accessibilityLayer
-                    data={chartData}
-                    margin={{
-                        left: 12,
-                        right: 12,
-                    }}
-                >
-                    <CartesianGrid vertical={false} />
-                    <XAxis
-                        dataKey={barPlotJson.xLabel.toLowerCase()}
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={8}
-                    />
-                    <YAxis
-                        tickLine={false}
-                        axisLine={false}
-                        tickMargin={8}
-                        tickFormatter={(value: number) => value.toFixed(0)}
-                    />
-                    <ChartTooltip
-                        cursor={false}
-                        content={<ChartTooltipContent />}
-                    />
-                    {dataKeys.map((key, index) => (
-                        <Bar
-                            key={index}
-                            dataKey={key}
-                            fill={chartConfig[key].color}
-                            radius={[4, 4, 0, 0]}
-                        />
-                    ))}
-                </BarChart>
-            </ChartContainer>
-        </CardContent>
-
-
-
+        <>
+            <h2>{barPlotData.title}</h2>
+            <BarChart
+                width={600}
+                height={400}
+                data={transformedData}
+                margin={{
+                    top: 20, right: 30, left: 20, bottom: 5,
+                }}
+            >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" label={{ value: barPlotData.xlabel, position: 'insideBottom', offset: -10 }} />
+                <YAxis label={{ value: barPlotData.ylabel, angle: -90, position: 'insideLeft' }} />
+                <Tooltip />
+                <Bar dataKey="value" fill={barPlotData.data[0].color} />
+            </BarChart>
+        </>
     );
 }
 

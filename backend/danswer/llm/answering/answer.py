@@ -5,6 +5,8 @@ from uuid import uuid4
 from langchain.schema.messages import BaseMessage
 from langchain_core.messages import AIMessageChunk
 from langchain_core.messages import HumanMessage
+from danswer.tools.graphing.graphing_tool import GraphingTool
+
 
 from danswer.chat.chat_utils import llm_doc_from_inference_section
 from danswer.chat.models import AnswerQuestionPossibleReturn
@@ -263,7 +265,7 @@ class Answer:
                 else tool_call_request["args"]
             )
 
-            tool_runner = ToolRunner(tool, tool_args)
+            tool_runner = ToolRunner(tool, tool_args, self.llm)
             yield tool_runner.kickoff()
             yield from tool_runner.tool_responses()
 
@@ -377,7 +379,7 @@ class Answer:
             return
 
         tool, tool_args = chosen_tool_and_args
-        tool_runner = ToolRunner(tool, tool_args)
+        tool_runner = ToolRunner(tool, tool_args, self.llm)
         yield tool_runner.kickoff()
 
         if tool.name in {SearchTool._NAME, InternetSearchTool._NAME}:
@@ -395,6 +397,12 @@ class Answer:
             self._update_prompt_builder_for_search_tool(
                 prompt_builder, final_context_documents
             )
+        elif tool.name == GraphingTool._NAME:
+            for response in tool_runner.tool_responses():
+
+                yield response
+
+
         elif tool.name == ImageGenerationTool._NAME:
             img_urls = []
             for response in tool_runner.tool_responses():

@@ -68,6 +68,8 @@ const TOOLS_WITH_CUSTOM_HANDLING = [
 import plotDataJson from "./linechart.json"
 import barChartDataJson from './barchart_data.json';
 import polarChartDataJson from './polar_plot_data.json';
+import { JSONUpload } from "./JSONUpload";
+import { ImageDisplay } from "@/components/chat_display/graphs/ImageDisplay";
 
 
 function FileDisplay({
@@ -80,9 +82,6 @@ function FileDisplay({
   const imageFiles = files.filter((file) => file.type === ChatFileType.IMAGE);
   const nonImgFiles = files.filter((file) => file.type !== ChatFileType.IMAGE && file.type !== ChatFileType.CSV);
   const csvImgFiles = files.filter((file) => file.type == ChatFileType.CSV);
-  console.log("HI")
-  console.log(files)
-  console.log(csvImgFiles)
 
   const [close, setClose] = useState(true)
   return (
@@ -138,12 +137,21 @@ function FileDisplay({
     </>
   );
 }
+export interface graph {
+  file_id: string
+  line: boolean
+}
 
+export interface GraphChunk {
+  file_id: string;
+  line_graph: boolean;
+}
 export const AIMessage = ({
   isActive,
   toggleDocumentSelection,
   alternativeAssistant,
   docs,
+  graphs = [],
   messageId,
   content,
   files,
@@ -162,6 +170,7 @@ export const AIMessage = ({
   retrievalDisabled,
   currentPersona,
 }: {
+  graphs?: graph[],
   isActive?: boolean;
   selectedDocuments?: DanswerDocument[] | null;
   toggleDocumentSelection?: () => void;
@@ -259,6 +268,7 @@ export const AIMessage = ({
     <div ref={trackedElementRef} className={"py-5 px-2 lg:px-5 relative flex "}>
       <div className="mx-auto w-[90%] max-w-message-max">
         <div className="xl:ml-8">
+          {/* <JSONUpload onUploadSuccess={() => null} /> */}
           <div className="flex">
             <AssistantIcon
               size="small"
@@ -301,8 +311,8 @@ export const AIMessage = ({
                         )}
                     </>
                   )}
-
                 <div className="w-full ml-4">
+
                   <div className="max-w-message-max break-words">
                     {(!toolCall || toolCall.tool_name === SEARCH_TOOL_NAME) && (
                       <>
@@ -386,6 +396,17 @@ export const AIMessage = ({
                           />
                         </div>
                       )}
+                    {graphs.map((graph, ind) => {
+                      return (
+                        graph.line ? <ModalChartWrapper key={ind} chartType="line" fileId={graph.file_id} >
+                          <LineChartDisplay fileId={graph.file_id} />
+                        </ModalChartWrapper>
+                          :
+                          <ModalChartWrapper key={ind} chartType="bar" fileId={graph.file_id} >
+                            <BarChartDisplay fileId={graph.file_id} />
+                          </ModalChartWrapper>
+                      )
+                    })}
 
                     {content ? (
                       <>
@@ -531,23 +552,24 @@ export const AIMessage = ({
                       </div>
                     )}
                   </div>
-                  <ModalChartWrapper plotDataJson={polarChartDataJson}>
-                    <PolarChartDisplay plotDataJson={polarChartDataJson} />
 
-                  </ModalChartWrapper>
 
-                  <ModalChartWrapper plotDataJson={plotDataJson}>
-                    <LineChartDisplay plotDataJson={plotDataJson} />
-                  </ModalChartWrapper>
+                  {/* <ModalChartWrapper chartType="radial" fileId={"67b61afc-e3b0-41ec-805f-2ec7cdd3c136"}>
+                        <PolarChartDisplay fileId={"67b61afc-e3b0-41ec-805f-2ec7cdd3c136"} />
+                      </ModalChartWrapper> */}
 
-                  {/* <ChartWrapper plotDataJson={plotDataJson}>
-                    <LineChartDisplay plotDataJson={plotDataJson} />
-                  </ChartWrapper>
+                  {/* <ModalChartWrapper chartType="line" fileId="fee2ff90-4ebe-43fc-858f-a95c73385da4" >
+                        <LineChartDisplay fileId="fee2ff90-4ebe-43fc-858f-a95c73385da4" />
+                      </ModalChartWrapper> */}
+                  {/* 
+                      <ModalChartWrapper chartType="bar" fileId={"0ad36971-9353-42de-b89d-9c3361d3c3eb"}>
+                        <BarChartDisplay fileId={"0ad36971-9353-42de-b89d-9c3361d3c3eb"} />
+                      </ModalChartWrapper>
 
-                  <ChartWrapper plotDataJson={barChartDataJson as PlotData}> */}
-                  <ModalChartWrapper plotDataJson={barChartDataJson}>
-                    <BarChartDisplay barPlotJson={barChartDataJson} />
-                  </ModalChartWrapper>
+                      <ModalChartWrapper chartType="other" fileId={"066fc31f-56f0-48fb-98d3-ffd46f1ac0f5"}>
+                        <ImageDisplay fileId={"066fc31f-56f0-48fb-98d3-ffd46f1ac0f5"} />
+                      </ModalChartWrapper>
+                  */}
 
 
                   {handleFeedback &&
