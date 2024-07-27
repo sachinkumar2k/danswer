@@ -86,9 +86,10 @@ export const CsvSection = ({ expand, csvFileDescriptor, expanded, close }: { clo
       document.body.removeChild(link);
     }
   }
+  
   return (
     <div className={`${!expanded ? "!rounded !rounded-xl max-w-message-max" : "w-full"} !bg-neutral-50 w-full border `}>
-      <CardHeader className="w-full !py-0 !pb-4 border-b  border-b-neutral-200  !pt-4  !mb-0 z-[10] top-0">
+      <CardHeader className="w-full !py-0 !pb-4 border-b  border-b-neutral-200 !pt-4 !mb-0 z-[10] top-0">
         <div className='flex justify-between items-center'>
           <CardTitle className='!my-auto !text-xl'>
             {csvFileDescriptor.name}
@@ -97,17 +98,17 @@ export const CsvSection = ({ expand, csvFileDescriptor, expanded, close }: { clo
             <TooltipGroup>
               <CustomTooltip showTick line position='top' content="Download file">
                 <button onClick={() => downloadFile()}>
-                  <DownloadCSVIcon className='cursor-pointer transition-colors duration-300 hover:text-neutral-800 h-6 w-6 text-neutral-400' />
+                  <DownloadCSVIcon className='cursor-pointer transition-colors duration-300 hover:text-neutral-800 h-6 w-6 text-neutral-400' /> 
                 </button>
-              </CustomTooltip>
-              <CustomTooltip line position='top' content={expanded ? "Minimize" : "Full screen"}>
+              </CustomTooltip> 
+              <CustomTooltip line position='top' content={expanded ? "Minimize" : "Full screen"}> 
                 <button onClick={() => expand()}>
-                  {!expanded ?
-                    <ExpandTwoIcon className='transition-colors duration-300 ml-4 hover:text-neutral-800 h-6 w-6 cursor-pointer text-neutral-400' />
+                  {!expanded ? 
+                    <ExpandTwoIcon className='transition-colors duration-300 ml-4 hover:text-neutral-800 h-6 w-6 cursor-pointer text-neutral-400' /> 
                     :
-                    <DexpandTwoIcon className='transition-colors duration-300 ml-4 hover:text-neutral-800 h-6 w-6 cursor-pointer text-neutral-400' />
+                    <DexpandTwoIcon className='transition-colors duration-300 ml-4 hover:text-neutral-800 h-6 w-6 cursor-pointer text-neutral-400' /> 
                   }
-                </button>
+                </button> 
               </CustomTooltip>
               <CustomTooltip line position='top' content="No vis">
                 <button onClick={() => close()}>

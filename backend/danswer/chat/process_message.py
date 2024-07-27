@@ -22,6 +22,8 @@ from danswer.file_store.utils import save_base64_image
 
 from danswer.tools.graphing.graphing_tool import GraphingResponse
 from danswer.tools.graphing.graphing_tool import GraphingTool
+from danswer.tools.analysis.analysis_tool import CSVAnalysisTool
+
 from danswer.tools.graphing.models import GRAPHING_RESPONSE_ID
 
 from danswer.configs.constants import MessageType
@@ -484,9 +486,18 @@ def stream_chat_message_objects(
         search_tool: SearchTool | None = None
         tool_dict: dict[int, list[Tool]] = {}  # tool_id to tool
         for db_tool_model in persona.tools:
+            print(f"TOOL IS {db_tool_model}")
             # handle in-code tools specially
+
             if db_tool_model.in_code_tool_id:
                 tool_cls = get_built_in_tool_by_id(db_tool_model.id, db_session)
+                if (
+                    tool_cls.__name__ == CSVAnalysisTool.__name__
+                    and not latest_query_files
+                ):
+                    print("TOOL CALL")
+                    tool_dict[db_tool_model.id] = [CSVAnalysisTool()]
+
                 if (
                     tool_cls.__name__ == GraphingTool.__name__
                     and not latest_query_files
@@ -560,7 +571,8 @@ def stream_chat_message_objects(
                     ]
 
                 continue
-
+            else:
+                print("LEAVE")
             # handle all custom tools
             if db_tool_model.openapi_schema:
                 tool_dict[db_tool_model.id] = cast(
@@ -573,7 +585,8 @@ def stream_chat_message_objects(
         tools: list[Tool] = []
         for tool_list in tool_dict.values():
             tools.extend(tool_list)
-
+        print("Da tools be")
+        print(tools)
         # factor in tool definition size when pruning
         document_pruning_config.tool_num_tokens = compute_all_tool_tokens(tools)
         document_pruning_config.using_tool_message = explicit_tool_calling_supported(

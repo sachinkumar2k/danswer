@@ -5,22 +5,22 @@ export function ImageDisplay({ fileId }: { fileId: string }) {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [fullImageShowing, setFullImageShowing] = useState(false);
 
-    useEffect(() => {
-        fetchImageUrl(fileId);
-    }, [fileId]);
+    // useEffect(() => {
+    //     fetchImageUrl(fileId);
+    // }, [fileId]);
 
-    const fetchImageUrl = async (id: string) => {
-        try {
-            const response = await fetch(`api/chat/file/${id}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch image data');
-            }
-            const data = await response.json();
-            setImageUrl(data.imageUrl); // Assuming the API returns an object with an imageUrl field
-        } catch (error) {
-            console.error("Error fetching image data:", error);
-        }
-    };
+    // const fetchImageUrl = async (id: string) => {
+    //     try {
+    //         const response = await fetch(`api/chat/file/${id}`);
+    //         if (!response.ok) {
+    //             throw new Error('Failed to fetch image data');
+    //         }
+    //         const data = await response.json();
+    //         setImageUrl(data.imageUrl); // Assuming the API returns an object with an imageUrl field
+    //     } catch (error) {
+    //         console.error("Error fetching image data:", error);
+    //     }
+    // };
 
     // const buildImgUrl = (id: string) => {
     //     // Implement your URL building logic here

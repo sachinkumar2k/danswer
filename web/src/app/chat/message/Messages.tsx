@@ -268,7 +268,6 @@ export const AIMessage = ({
     <div ref={trackedElementRef} className={"py-5 px-2 lg:px-5 relative flex "}>
       <div className="mx-auto w-[90%] max-w-message-max">
         <div className="xl:ml-8">
-          {/* <JSONUpload onUploadSuccess={() => null} /> */}
           <div className="flex">
             <AssistantIcon
               size="small"
@@ -284,7 +283,7 @@ export const AIMessage = ({
                         handleShowRetrieved !== undefined &&
                         isCurrentlyShowingRetrieved !== undefined &&
                         !retrievalDisabled && (
-                          <div className="my-1">
+                          <div className="my-1"> 
                             <SearchSummary
                               query={query}
                               hasDocs={hasDocs || false}

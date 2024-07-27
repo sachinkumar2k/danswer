@@ -5,6 +5,9 @@ from uuid import uuid4
 from langchain.schema.messages import BaseMessage
 from langchain_core.messages import AIMessageChunk
 from langchain_core.messages import HumanMessage
+
+from danswer.tools.analysis.analysis_tool import CSVAnalysisTool
+
 from danswer.tools.graphing.graphing_tool import GraphingTool
 
 
@@ -220,11 +223,14 @@ class Answer:
                     self.tools, self.force_use_tool
                 )
             ]
+
             for message in self.llm.stream(
                 prompt=prompt,
                 tools=final_tool_definitions if final_tool_definitions else None,
                 tool_choice="required" if self.force_use_tool.force_use else None,
             ):
+                print('a')
+                print(message)
                 if isinstance(message, AIMessageChunk) and (
                     message.tool_call_chunks or message.tool_calls
                 ):
@@ -301,7 +307,6 @@ class Answer:
     ) -> Iterator[str | ToolCallKickoff | ToolResponse | ToolCallFinalResult]:
         prompt_builder = AnswerPromptBuilder(self.message_history, self.llm.config)
         chosen_tool_and_args: tuple[Tool, dict] | None = None
-
         if self.force_use_tool.force_use:
             # if we are forcing a tool, we don't need to check which tools to run
             tool = next(
@@ -397,6 +402,11 @@ class Answer:
             self._update_prompt_builder_for_search_tool(
                 prompt_builder, final_context_documents
             )
+        elif tool.name == CSVAnalysisTool._NAME:
+            for response in tool_runner.tool_responses():
+
+                yield response
+
         elif tool.name == GraphingTool._NAME:
             for response in tool_runner.tool_responses():
 
