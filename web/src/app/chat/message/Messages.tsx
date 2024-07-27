@@ -1,11 +1,7 @@
 "use client";
 
 import {
-  FiCpu,
   FiImage,
-  FiThumbsDown,
-  FiThumbsUp,
-  FiUser,
   FiEdit2,
   FiChevronRight,
   FiChevronLeft,
@@ -58,14 +54,21 @@ import { ValidSources } from "@/lib/types";
 import { Tooltip } from "@/components/tooltip/Tooltip";
 import { useMouseTracking } from "./hooks";
 import { InternetSearchIcon } from "@/components/InternetSearchIcon";
-import CSVGraph from "./CSVrenderer";
-import { DISABLED_CSV_DISPLAY, LOGOUT_DISABLED } from "@/lib/constants";
+import CsvPage from "@/components/chat_display/CsvDisplay";
+import { DISABLED_CSV_DISPLAY } from "@/lib/constants";
+import { LineChartDisplay, ModalChartWrapper } from "../../../components/chat_display/graphs/LineChartDisplay";
+import PolarChartDisplay from "@/components/chat_display/graphs/PortalChart";
+import BarChartDisplay from "@/components/chat_display/graphs/BarChart";
 
 const TOOLS_WITH_CUSTOM_HANDLING = [
   SEARCH_TOOL_NAME,
   INTERNET_SEARCH_TOOL_NAME,
   IMAGE_GENERATION_TOOL_NAME,
 ];
+import plotDataJson from "./linechart.json"
+import barChartDataJson from './barchart_data.json';
+import polarChartDataJson from './polar_plot_data.json';
+
 
 function FileDisplay({
   files,
@@ -108,23 +111,21 @@ function FileDisplay({
               return (
                 <div key={file.id} className="w-fit">
                   {close && !DISABLED_CSV_DISPLAY ?
-                    <CSVGraph close={() => setClose(false)} csvFileDescriptor={file} />
+                    <CsvPage close={() => setClose(false)} csvFileDescriptor={file} />
                     :
                     <DocumentPreview
                       open={DISABLED_CSV_DISPLAY ? undefined : () => setClose(true)}
                       fileName={file.name || file.id}
                       maxWidth="max-w-64"
                       alignBubble={alignBubble}
-                    />}
-                  {/* <CSVGraph fileId="b6f4d75d-12a7-491a-9447-542c82c47319"/> */}
-
-
+                    />}s
                 </div>
               );
             })}
           </div>
         </div>
       )}
+      {/* <LineChartDisplay /> */}
       {imageFiles && imageFiles.length > 0 && (
         <div className={` ${alignBubble && "ml-auto"} mt-2 auto mb-4`}>
           <div className="flex flex-col gap-2">
@@ -530,6 +531,25 @@ export const AIMessage = ({
                       </div>
                     )}
                   </div>
+                  <ModalChartWrapper plotDataJson={polarChartDataJson}>
+                    <PolarChartDisplay plotDataJson={polarChartDataJson} />
+
+                  </ModalChartWrapper>
+
+                  <ModalChartWrapper plotDataJson={plotDataJson}>
+                    <LineChartDisplay plotDataJson={plotDataJson} />
+                  </ModalChartWrapper>
+
+                  {/* <ChartWrapper plotDataJson={plotDataJson}>
+                    <LineChartDisplay plotDataJson={plotDataJson} />
+                  </ChartWrapper>
+
+                  <ChartWrapper plotDataJson={barChartDataJson as PlotData}> */}
+                  <ModalChartWrapper plotDataJson={barChartDataJson}>
+                    <BarChartDisplay barPlotJson={barChartDataJson} />
+                  </ModalChartWrapper>
+
+
                   {handleFeedback &&
                     (isActive ? (
                       <div
@@ -596,7 +616,7 @@ export const AIMessage = ({
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

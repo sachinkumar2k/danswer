@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FileDescriptor } from '../interfaces';
+
 import { CustomTooltip, TooltipGroup } from '@/components/tooltip/CustomTooltip';
 import { Modal } from '@/components/Modal';
 import { DexpandTwoIcon, DownloadCSVIcon, ExpandTwoIcon, OpenIcon } from '@/components/icons/icons';
@@ -7,6 +7,7 @@ import { DexpandTwoIcon, DownloadCSVIcon, ExpandTwoIcon, OpenIcon } from '@/comp
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { FileDescriptor } from '@/app/chat/interfaces';
 
 export default function CsvPage({ csvFileDescriptor, close }: { csvFileDescriptor: FileDescriptor, close: () => void }) {
 
@@ -17,14 +18,13 @@ export default function CsvPage({ csvFileDescriptor, close }: { csvFileDescripto
 
   return (
     <>
-      {expanded &&
+      {expanded ?
         <Modal onOutsideClick={() => setExpanded(false)} className='animate-all ease-in !p-0'>
           <CsvSection close={close} expanded={expanded} expand={expand} csvFileDescriptor={csvFileDescriptor} />
         </Modal>
-      }
-      <div>
+        :
         <CsvSection close={close} expanded={expanded} expand={expand} csvFileDescriptor={csvFileDescriptor} />
-      </div>
+      }
     </>
   );
 };
@@ -66,8 +66,6 @@ export const CsvSection = ({ expand, csvFileDescriptor, expanded, close }: { clo
       console.error("Error fetching CSV file:", error);
     }
   };
-
-
 
   const downloadFile = () => {
     if (!fileId) return;
@@ -146,4 +144,3 @@ export const CsvSection = ({ expand, csvFileDescriptor, expanded, close }: { clo
     </div>
   )
 }
-
