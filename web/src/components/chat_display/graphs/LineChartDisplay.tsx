@@ -71,14 +71,14 @@ export function ChartWrapper({ expanded, children, fileId, chartType, expand }: 
         return <div>Loading...</div>;
     }
     return (
-        <div className="bg-background-50  group rounded-lg shadow-md relative">
+        <div className="bg-background-50 group rounded-lg shadow-md relative">
             <div className="relative p-4">
                 <div className='relative flex pb-2 items-center justify-between'>
                     <h2 className="text-xl font-semibold mb-2">{plotDataJson.title}</h2>
                     <div className='flex gap-x-2'>
                         <TooltipGroup>
                             {chartType != "other" &&
-                                <CustomTooltip showTick line position='top' content="Download file">
+                                <CustomTooltip showTick line position='top' content="View Static file">
                                     <button onClick={() => downloadFile()}>
                                         <PaintingIconSkeleton className='cursor-pointer transition-colors duration-300 hover:text-neutral-800 h-6 w-6 text-neutral-400' />
                                     </button>
