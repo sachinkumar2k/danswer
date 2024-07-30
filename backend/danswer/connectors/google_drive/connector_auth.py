@@ -153,7 +153,11 @@ def delete_google_app_cred() -> None:
 
 
 def get_service_account_key() -> GoogleServiceAccountKey:
+    print("gathering")
+
     creds_str = str(get_dynamic_config_store().load(GOOGLE_DRIVE_SERVICE_ACCOUNT_KEY))
+    print("STRING IS")
+    print(creds_str)
     return GoogleServiceAccountKey(**json.loads(creds_str))
 
 

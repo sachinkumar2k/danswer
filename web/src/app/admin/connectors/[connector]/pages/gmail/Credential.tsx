@@ -363,6 +363,7 @@ export const GmailOAuthSection = ({
                   type: "error",
                 });
               }
+
               refreshCredentials();
             }}
           >

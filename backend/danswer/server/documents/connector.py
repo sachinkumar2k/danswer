@@ -291,6 +291,7 @@ def upsert_gmail_service_account_credential(
     """Special API which allows the creation of a credential for a service account.
     Combines the input with the saved service account key to create an entry in the
     `Credential` table."""
+    print(service_account_credential_request)
     try:
         credential_base = build_service_account_creds(
             DocumentSource.GMAIL,

@@ -20,7 +20,10 @@ import CredentialSection from "@/components/credentials/CredentialSection";
 import { buildCCPairInfoUrl } from "./lib";
 import { SourceIcon } from "@/components/SourceIcon";
 import { connectorConfigs } from "@/lib/connectors/connectors";
-import { credentialTemplates } from "@/lib/connectors/credentials";
+import {
+  credentialTemplates,
+  noCredentialModifications,
+} from "@/lib/connectors/credentials";
 
 // since the uploaded files are cleaned up after some period of time
 // re-indexing will not work for the file connector. Also, it would not
@@ -105,19 +108,20 @@ function Main({ ccPairId }: { ccPairId: number }) {
         Total Documents Indexed:{" "}
         <b className="text-emphasis">{totalDocsIndexed}</b>
       </div>
-      {credentialTemplates[ccPair.connector.source] && (
-        <>
-          <Divider />
+      {credentialTemplates[ccPair.connector.source] &&
+        !noCredentialModifications.includes(ccPair.connector.source) && (
+          <>
+            <Divider />
 
-          <Title className="mb-2">Credentials</Title>
+            <Title className="mb-2">Credentials</Title>
 
-          <CredentialSection
-            ccPair={ccPair}
-            sourceType={ccPair.connector.source}
-            refresh={() => refresh()}
-          />
-        </>
-      )}
+            <CredentialSection
+              ccPair={ccPair}
+              sourceType={ccPair.connector.source}
+              refresh={() => refresh()}
+            />
+          </>
+        )}
       <Divider />
       <ConfigDisplay
         connectorSpecificConfig={ccPair.connector.connector_specific_config}

@@ -184,6 +184,11 @@ export interface AxeroCredentialJson {
 export interface MediaWikiCredentialJson {}
 export interface WikipediaCredentialJson extends MediaWikiCredentialJson {}
 
+export const noCredentialModifications: ValidSources[] = [
+  "google_drive",
+  "gmail",
+];
+
 export const credentialTemplates: Record<ValidSources, any> = {
   github: { github_access_token: "" } as GithubCredentialJson,
   gitlab: {
