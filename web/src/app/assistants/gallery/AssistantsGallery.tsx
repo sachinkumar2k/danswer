@@ -109,9 +109,9 @@ export function AssistantsGallery({
                 {user && (
                   <div className="ml-auto">
                     {!user.preferences?.chosen_assistants ||
-                    user.preferences?.chosen_assistants?.includes(
-                      assistant.id
-                    ) ? (
+                      user.preferences?.chosen_assistants?.includes(
+                        assistant.id
+                      ) ? (
                       <Button
                         className="
                           mr-2
@@ -133,7 +133,7 @@ export function AssistantsGallery({
                           const success = await removeAssistantFromList(
                             assistant.id,
                             user.preferences?.chosen_assistants ||
-                              allAssistantIds
+                            allAssistantIds
                           );
                           if (success) {
                             setPopup({
@@ -164,7 +164,7 @@ export function AssistantsGallery({
                           const success = await addAssistantToList(
                             assistant.id,
                             user.preferences?.chosen_assistants ||
-                              allAssistantIds
+                            allAssistantIds
                           );
                           if (success) {
                             setPopup({

@@ -13,7 +13,7 @@ export default function FixedLogo() {
 
   return (
     <div className="absolute flex z-40 left-2.5 top-2">
-      <div className="max-w-[200px] flex gap-x-1 my-auto">
+      <div className="flex gap-x-1 my-auto">
         <div className="flex-none invisible mb-auto">
           <Logo />
         </div>

@@ -94,7 +94,7 @@ const AdvancedFormPage = forwardRef<FormikProps<any>, AdvancedFormPageProps>(
                     setFieldValue("indexingStart", value);
                   }}
                   setFieldValue={setFieldValue}
-                  type="date"
+                  isTextArea
                   label="Indexing Start Date"
                   name="indexingStart"
                 />

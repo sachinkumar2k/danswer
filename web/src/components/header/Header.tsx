@@ -49,7 +49,9 @@ export function Header({ user, page }: HeaderProps) {
               {enterpriseSettings && enterpriseSettings.application_name ? (
                 <div>
                   <HeaderTitle>
+                    <p className="text-sm">
                     {enterpriseSettings.application_name}
+                    </p>
                   </HeaderTitle>
                   {!NEXT_PUBLIC_DO_NOT_USE_TOGGLE_OFF_DANSWER_POWERED && (
                     <p className="text-xs text-subtle">Powered by Danswer</p>
