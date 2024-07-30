@@ -9,7 +9,6 @@ import { FiSidebar } from "react-icons/fi";
 
 export default function FixedLogo() {
   const combinedSettings = useContext(SettingsContext);
-  const settings = combinedSettings?.settings;
   const enterpriseSettings = combinedSettings?.enterpriseSettings;
 
   return (

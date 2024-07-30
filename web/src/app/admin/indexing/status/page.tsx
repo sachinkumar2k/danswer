@@ -62,7 +62,7 @@ function Main() {
   );
 }
 
-export default function Status() {
+export default function CCPairClient() {
   return (
     <div className="mx-auto container">
       <AdminPageTitle

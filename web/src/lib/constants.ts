@@ -23,6 +23,7 @@ export const GOOGLE_DRIVE_AUTH_IS_ADMIN_COOKIE_NAME =
 
 export const SEARCH_TYPE_COOKIE_NAME = "search_type";
 export const AGENTIC_SEARCH_TYPE_COOKIE_NAME = "agentic_type";
+export const TOGGLED_CONNECTORS_COOKIE_NAME = "toggled_connectors";
 
 export const SIDEBAR_WIDTH_CONST = "350px";
 export const SIDEBAR_WIDTH = `w-[350px]`;

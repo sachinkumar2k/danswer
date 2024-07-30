@@ -28,6 +28,8 @@ import { SourceIcon } from "@/components/SourceIcon";
 import { getSourceDisplayName } from "@/lib/sources";
 import { CustomTooltip } from "@/components/tooltip/CustomTooltip";
 import { Warning } from "@phosphor-icons/react";
+import Cookies from "js-cookie";
+import { TOGGLED_CONNECTORS_COOKIE_NAME } from "@/lib/constants";
 
 const columnWidths = {
   first: "20%",
@@ -254,9 +256,12 @@ export function CCPairIndexingStatusTable({
   ccPairsIndexingStatuses: ConnectorIndexingStatus<any, any>[];
 }) {
   const [allToggleTracker, setAllToggleTracker] = useState(true);
-  const [openSources, setOpenSources] = useState<Record<ValidSources, boolean>>(
-    {} as Record<ValidSources, boolean>
-  );
+  const [connectorsToggled, setConnectorsToggled] = useState<
+    Record<ValidSources, boolean>
+  >(() => {
+    const savedState = Cookies.get(TOGGLED_CONNECTORS_COOKIE_NAME);
+    return savedState ? JSON.parse(savedState) : {};
+  });
 
   const { groupedStatuses, sortedSources, groupSummaries } = useMemo(() => {
     const grouped: Record<ValidSources, ConnectorIndexingStatus<any, any>[]> =
@@ -296,38 +301,18 @@ export function CCPairIndexingStatusTable({
   }, [ccPairsIndexingStatuses]);
 
   const toggleSource = (source: ValidSources) => {
-    setOpenSources((prev) => ({
-      ...prev,
-      [source]: !prev[source],
-    }));
-  };
-
-  const toggleSources = (toggle: boolean) => {
-    const updatedSources = Object.fromEntries(
-      sortedSources.map((item) => [item, toggle])
+    const newConnectorsToggled = {
+      ...connectorsToggled,
+      [source]: !connectorsToggled[source],
+    };
+    setConnectorsToggled(newConnectorsToggled);
+    Cookies.set(
+      TOGGLED_CONNECTORS_COOKIE_NAME,
+      JSON.stringify(newConnectorsToggled)
     );
-    setOpenSources(updatedSources as Record<ValidSources, boolean>);
-    setAllToggleTracker(!toggle);
   };
 
   const router = useRouter();
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.metaKey || event.ctrlKey) {
-        switch (event.key.toLowerCase()) {
-          case "e":
-            toggleSources(false);
-            event.preventDefault();
-            break;
-        }
-      }
-    };
-    toggleSources(true);
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [router, allToggleTracker]);
 
   return (
     <div className="-mt-20">
@@ -356,11 +341,11 @@ export function CCPairIndexingStatusTable({
               <SummaryRow
                 source={source}
                 summary={groupSummaries[source]}
-                isOpen={openSources[source] || false}
+                isOpen={connectorsToggled[source] || false}
                 onToggle={() => toggleSource(source)}
               />
 
-              {openSources[source] && (
+              {connectorsToggled[source] && (
                 <>
                   <TableRow className="border border-border">
                     <TableHeaderCell className={`w-[${columnWidths.first}]`}>
