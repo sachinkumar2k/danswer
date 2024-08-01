@@ -10,8 +10,7 @@ Can you please summarize them in a sentence or two?
 """
 
 TOOL_CALLING_PROMPT = """
-Can you please summarize the two images you just generated in a sentence or two? Do not use a
- numbered list.
+Can you please summarize the two images attached to this message please! Do not include image urls or bulleted lists.
 """
 
 

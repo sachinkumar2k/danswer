@@ -97,6 +97,10 @@ class AnswerPromptBuilder:
     def build(
         self, tool_call_summary: ToolCallSummary | None = None
     ) -> list[BaseMessage]:
+        print(
+            "\n\n\n\n----------------------YYYYY INSIDE THE ZBUILD FUNCITON-------\n\n\n"
+        )
+        print(tool_call_summary)
         if not self.user_message_and_token_cnt:
             raise ValueError("User message must be set before building prompt")
 
@@ -117,6 +121,11 @@ class AnswerPromptBuilder:
             final_messages_with_tokens.append((tool_call_summary.tool_call_request, 0))
             final_messages_with_tokens.append((tool_call_summary.tool_call_result, 0))
 
-        return drop_messages_history_overflow(
+        content = drop_messages_history_overflow(
             final_messages_with_tokens, self.max_tokens
         )
+        print(
+            "\n\n\n\n----------------------YYYYY INSIDE THE S:Ldkfja;sdkfj FUNCITON-------\n\n\n"
+        )
+        print(content)
+        return content
