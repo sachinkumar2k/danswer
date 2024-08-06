@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { SettingsContext } from "@/components/settings/SettingsProvider";
 import { useContext } from "react";
 import remarkGfm from "remark-gfm";
+import { InfoIcon } from "@/components/icons/icons";
 
 export function ChatBanner() {
   const settings = useContext(SettingsContext);
@@ -14,25 +15,26 @@ export function ChatBanner() {
   return (
     <div
       className={`
-        mt-8
         mb-2
-        p-1
-        mx-2
+        px-2
         z-[39] 
+        h-[4rem]
         text-wrap
-        w-[500px]
+        w-[96%] 
         mx-auto
         bg-background-100
         shadow-sm
         rounded
+        border-l-8 border-l-400
+        border-r-4 border-r-200
         border-border
         border
         flex`}
     >
       <div className="mx-auto text-emphasis text-sm flex flex-col">
-        <div className="my-auto">
+        <div className="inline-block my-auto">
           <ReactMarkdown
-            className="prose flex text-wrap break-all text-wrap max-w-full"
+            className="prose flex text-wrap break-word text-wrap max-w-full"
             components={{
               a: ({ node, ...props }) => (
                 <a
@@ -45,7 +47,7 @@ export function ChatBanner() {
               p: ({ node, ...props }) => (
                 <p
                   {...props}
-                  className="text-wrap break-all line-clamp-3 text-sm"
+                  className="text-wrap break-word line-clamp-2 text-sm"
                 />
               ),
             }}
@@ -53,6 +55,9 @@ export function ChatBanner() {
           >
             {settings.enterpriseSettings.custom_header_content}
           </ReactMarkdown>
+          <span className="">
+            <InfoIcon />
+          </span>
         </div>
       </div>
     </div>

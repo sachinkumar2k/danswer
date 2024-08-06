@@ -15,8 +15,8 @@ export default function FixedLogo() {
   return (
     <>
       <div className="fixed pointer-events-none flex z-40 left-2.5 top-2">
-        <div className="max-w-[200px] mobile:hidden flex items-center gap-x-1 my-auto">
-          <div className="flex-none my-auto">
+        <div className="max-w-[200px] mobile:hidden flex h-[4rem] items-top gap-x-1 mb-auto">
+          <div className="flex-none mb-auto">
             <Logo height={24} width={24} />
           </div>
           <div className="">

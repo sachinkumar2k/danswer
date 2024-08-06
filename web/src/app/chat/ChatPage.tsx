@@ -1190,21 +1190,24 @@ export function ChatPage({
             {popup}
 
             <div className="flex h-full flex-col w-full">
-              {liveAssistant && (
-                <FunctionalHeader
-                  reset={() => setMessage("")}
-                  page="chat"
-                  setSharingModalVisible={
-                    chatSessionIdRef.current !== null
-                      ? setSharingModalVisible
-                      : undefined
-                  }
-                  toggleSidebar={toggleSidebar}
-                  user={user}
-                  currentChatSession={selectedChatSession}
-                />
-              )}
-              <div className="w-full flex">
+              <div className="fixed top-0 left-0">
+                {liveAssistant && (
+                  <FunctionalHeader
+                    sidebarToggled={toggledSidebar}
+                    reset={() => setMessage("")}
+                    page="chat"
+                    setSharingModalVisible={
+                      chatSessionIdRef.current !== null
+                        ? setSharingModalVisible
+                        : undefined
+                    }
+                    toggleSidebar={toggleSidebar}
+                    user={user}
+                    currentChatSession={selectedChatSession}
+                  />
+                )}
+              </div>
+              {/* <div className="w-full flex">
                 <div
                   style={{ transition: "width 0.30s ease-out" }}
                   className={`
@@ -1220,7 +1223,7 @@ export function ChatPage({
                   `}
                 />
                 <ChatBanner />
-              </div>
+              </div> */}
               {documentSidebarInitialWidth !== undefined ? (
                 <Dropzone onDrop={handleImageUpload} noClick>
                   {({ getRootProps }) => (
