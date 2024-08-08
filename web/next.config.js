@@ -9,15 +9,12 @@ const version = env_version || package_version;
 const nextConfig = {
   output: "standalone",
   swcMinify: true,
+
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: process.env.WEB_DOMAIN
-          ? new URL(process.env.WEB_DOMAIN).hostname
-          : "localhost",
-        port: "",
-        pathname: "/**",
+        protocol: "https", // or http
+        hostname: process.env.WEB_DOMAIN || "localhost",
       },
     ],
   },
