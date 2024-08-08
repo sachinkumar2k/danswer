@@ -10,9 +10,16 @@ const nextConfig = {
   output: "standalone",
   swcMinify: true,
   images: {
-    domains: process.env.WEB_DOMAIN
-      ? [new URL(process.env.WEB_DOMAIN).hostname]
-      : ["localhost"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: process.env.WEB_DOMAIN
+          ? new URL(process.env.WEB_DOMAIN).hostname
+          : "localhost",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 
   rewrites: async () => {
