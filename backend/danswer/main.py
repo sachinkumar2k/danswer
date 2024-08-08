@@ -44,7 +44,6 @@ from danswer.db.embedding_model import get_current_db_embedding_model
 from danswer.db.embedding_model import get_secondary_db_embedding_model
 from danswer.db.engine import get_sqlalchemy_engine
 from danswer.db.engine import init_sqlalchemy_engine
-from danswer.db.engine import warm_up_connections
 from danswer.db.index_attempt import cancel_indexing_attempts_past_model
 from danswer.db.index_attempt import expire_index_attempts
 from danswer.db.models import EmbeddingModel
@@ -226,7 +225,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
         )
 
     # fill up Postgres connection pools
-    await warm_up_connections()
+    # await warm_up_connections()
 
     with Session(engine) as db_session:
         check_index_swap(db_session=db_session)
