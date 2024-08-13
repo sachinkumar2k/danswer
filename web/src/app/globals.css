@@ -265,7 +265,7 @@
     /* neutral-200 */
     --color-text-700: #f5f5f5;
     /* neutral-100 */
-    --color-text-800: #1e1a1a;
+    --color-text-800: #f5f5f5;
     /* neutral-50 */
     /* Text emphasis colors */
 
@@ -424,14 +424,14 @@
 
 .loading-text {
   display: inline-block;
-  color: #e5e5e5;
+  color: var(--color-text-200);
 
   background: linear-gradient(
     -90deg,
-    #a3a3a3 0%,
-    #000000 5%,
-    #a3a3a3 10%,
-    #a3a3a3 100%
+    var(--color-text-400) 0%,
+    var(--color-background) 5%,
+    var(--color-text-400) 10%,
+    var(--color-text-400) 100%
   );
   background-size: 200% 100%;
   background-clip: text;
