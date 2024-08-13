@@ -370,9 +370,9 @@ export function ChatInputBar({
               flex
               flex-col
               border
-              border-[#E5E7EB]
+              border-border-medium
               rounded-lg
-              bg-background-100
+              bg-background-input
               [&:has(textarea:focus)]::ring-1
               [&:has(textarea:focus)]::ring-black
             "
@@ -467,7 +467,7 @@ export function ChatInputBar({
                 resize-none
                 rounded-lg
                 border-0
-                bg-background-100
+                bg-background-input
                 ${
                   textAreaRef.current &&
                   textAreaRef.current.scrollHeight > MAX_INPUT_HEIGHT
@@ -477,8 +477,9 @@ export function ChatInputBar({
                 whitespace-normal
                 break-word
                 overscroll-contain
+                text-text
                 outline-none
-                placeholder-subtle
+                placeholder:text-subtle
                 resize-none
                 pl-4
                 pr-12
@@ -509,7 +510,7 @@ export function ChatInputBar({
               }}
               suppressContentEditableWarning={true}
             />
-            <div className="flex items-center space-x-3 mr-12 px-4 pb-2 ">
+            <div className="text-icon flex items-center space-x-3 mr-12 px-4 pb-2 ">
               <Popup
                 removePadding
                 content={(close) => (
@@ -606,10 +607,10 @@ export function ChatInputBar({
               >
                 <SendIcon
                   size={28}
-                  className={`text-emphasis text-white p-1 rounded-full ${
+                  className={`text-emphasis  p-1 rounded-full ${
                     message && !isStreaming
                       ? "bg-background-800"
-                      : "bg-[#D7D7D7]"
+                      : "bg-background-600"
                   }`}
                 />
               </div>

@@ -296,7 +296,7 @@ export function ClientLayout({
           <div className="fixed bg-background left-0 gap-x-4 mb-8 px-4 py-2 w-full items-center flex justify-end">
             <UserDropdown user={user} />
           </div>
-          <div className="pt-20 flex overflow-y-auto h-full px-4 md:px-12">
+          <div className="pt-20 text-text flex overflow-y-auto h-full px-4 md:px-12">
             {children}
           </div>
         </div>

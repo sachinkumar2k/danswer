@@ -247,7 +247,8 @@ export const ConfigureIcon = ({
   );
 };
 
-export const defaultTailwindCSS = "my-auto flex flex-shrink-0 text-default";
+export const defaultTailwindCSS =
+  "my-auto flex flex-shrink-0 text-default text-text";
 export const defaultTailwindCSSBlue = "my-auto flex flex-shrink-0 text-link";
 
 export const ColorSlackIcon = ({
@@ -972,7 +973,9 @@ export const ConfluenceIcon = ({
   return (
     <div
       style={{ width: `${size + 4}px`, height: `${size + 4}px` }}
-      className={`w-[${size + 4}px] h-[${size + 4}px] -m-0.5 ` + className}
+      className={
+        `text-icon w-[${size + 4}px] h-[${size + 4}px] -m-0.5 ` + className
+      }
     >
       <Image src={confluenceSVG} alt="Logo" width="96" height="96" />
     </div>

@@ -36,19 +36,19 @@ const ToggleSwitch = () => {
   };
 
   return (
-    <div className="bg-gray-100 mobile:mt-8 flex rounded-full p-1">
+    <div className="bg-background-100 mobile:mt-8 flex rounded-full p-1">
       <div
         className={`absolute mobile:mt-8 top-1 bottom-1 ${
           activeTab === "chat" ? "w-[45%]" : "w-[50%]"
-        } bg-white rounded-full shadow ${
+        } bg-inverted rounded-full shadow ${
           isInitialLoad ? "" : "transition-transform duration-300 ease-in-out"
         } ${activeTab === "chat" ? "translate-x-[115%]" : "translate-x-[1%]"}`}
       />
       <button
         className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 ease-in-out flex items-center relative z-10 ${
           activeTab === "search"
-            ? "text-gray-800"
-            : "text-gray-500 hover:text-gray-700"
+            ? "text-text-800"
+            : "text-text-500 hover:text-text-700"
         }`}
         onClick={() => handleTabChange("search")}
       >
@@ -61,8 +61,8 @@ const ToggleSwitch = () => {
       <button
         className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 ease-in-out flex items-center relative z-10 ${
           activeTab === "chat"
-            ? "text-gray-800"
-            : "text-gray-500 hover:text-gray-700"
+            ? "text-text-800"
+            : "text-text-500 hover:text-text-700"
         }`}
         onClick={() => handleTabChange("chat")}
       >
@@ -148,7 +148,7 @@ export default function FunctionalWrapper({
         </div>
       )}
 
-      <div className="overscroll-y-contain overflow-y-scroll overscroll-contain left-0 top-0 w-full h-svh">
+      <div className="overscroll-y-contain bg-background-chat overflow-y-scroll overscroll-contain left-0 top-0 w-full h-svh">
         {content(toggledSidebar, toggle)}
       </div>
     </>

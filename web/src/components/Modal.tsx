@@ -29,13 +29,14 @@ export function Modal({
     <div>
       <div
         className={`
-        fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm
+        fixed inset-0 bg-background-800/30  backdrop-blur-sm
         flex items-center justify-center z-50
       `}
         onClick={onOutsideClick}
       >
         <div
           className={`
+            border-border border
           bg-background rounded shadow-lg
           relative ${width ?? "w-1/2"} text-sm 
           ${noPadding ? "" : "p-8"}

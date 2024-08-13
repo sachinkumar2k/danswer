@@ -66,220 +66,101 @@ module.exports = {
         "message-max": "725px",
         "searchbar-max": "750px",
       },
+
       colors: {
-        // Helper function to create color objects
-        createColor: (lightColor, darkColor) => ({
-          DEFAULT: darkColor,
-          dark: darkColor,
-        }),
+        "code-bg": "var(--color-code-bg)",
+        "code-text": "var(--color-code-text)",
+        "token-comment": "var(--color-token-comment)",
+        "token-punctuation": "var(--color-token-punctuation)",
+        "token-property": "var(--color-token-property)",
+        "token-selector": "var(--color-token-selector)",
+        "token-atrule": "var(--color-token-atrule)",
+        "token-function": "var(--color-token-function)",
+        "token-regex": "var(--color-token-regex)",
+        "token-attr-name": "var(--color-token-attr-name)",
 
-        // Code styling
-        "code-bg": ({ opacityValue }) => ({
-          DEFAULT: `rgba(0, 0, 0, ${opacityValue || 1})`,
-          dark: `rgba(30, 30, 30, ${opacityValue || 1})`,
-        }),
-        "code-text": ({ opacityValue }) => ({
-          DEFAULT: `rgba(224, 224, 224, ${opacityValue || 1})`,
-          dark: `rgba(212, 212, 212, ${opacityValue || 1})`,
-        }),
-        "token-comment": "#608b4e",
-        "token-punctuation": "#d4d4d4",
-        "token-property": "#569cd6",
-        "token-selector": "#e07b53",
-        "token-atrule": "#d18ad8",
-        "token-function": "#f0e68c",
-        "token-regex": "#9cdcfe",
-        "token-attr-name": "#9cdcfe",
+        "background-search": "var(--color-background-search)",
+        input: "var(--color-input)",
 
-        // Background
-        "background-search": ({ opacityValue }) => ({
-          DEFAULT: `rgba(255, 255, 255, ${opacityValue || 1})`,
-          dark: `rgba(31, 41, 55, ${opacityValue || 1})`,
-        }),
-        input: ({ opacityValue }) => ({
-          DEFAULT: `rgba(245, 245, 245, ${opacityValue || 1})`,
-          dark: `rgba(55, 65, 81, ${opacityValue || 1})`,
-        }),
-        background: ({ opacityValue }) => ({
-          DEFAULT: `rgba(250, 250, 250, ${opacityValue || 1})`,
-          dark: `rgba(17, 24, 39, ${opacityValue || 1})`,
-        }),
-        "background-100": ({ opacityValue }) => ({
-          DEFAULT: `rgba(245, 245, 245, ${opacityValue || 1})`,
-          dark: `rgba(31, 41, 55, ${opacityValue || 1})`,
-        }),
-        "background-125": ({ opacityValue }) => ({
-          DEFAULT: `rgba(241, 242, 244, ${opacityValue || 1})`,
-          dark: `rgba(36, 43, 56, ${opacityValue || 1})`,
-        }),
-        "background-150": ({ opacityValue }) => ({
-          DEFAULT: `rgba(234, 234, 234, ${opacityValue || 1})`,
-          dark: `rgba(42, 52, 65, ${opacityValue || 1})`,
-        }),
-        "background-200": ({ opacityValue }) => ({
-          DEFAULT: `rgba(229, 229, 229, ${opacityValue || 1})`,
-          dark: `rgba(55, 65, 81, ${opacityValue || 1})`,
-        }),
-        "background-300": ({ opacityValue }) => ({
-          DEFAULT: `rgba(212, 212, 212, ${opacityValue || 1})`,
-          dark: `rgba(75, 85, 99, ${opacityValue || 1})`,
-        }),
-        "background-400": ({ opacityValue }) => ({
-          DEFAULT: `rgba(163, 163, 163, ${opacityValue || 1})`,
-          dark: `rgba(107, 114, 128, ${opacityValue || 1})`,
-        }),
-        "background-800": ({ opacityValue }) => ({
-          DEFAULT: `rgba(38, 38, 38, ${opacityValue || 1})`,
-          dark: `rgba(229, 231, 235, ${opacityValue || 1})`,
-        }),
-        "background-900": ({ opacityValue }) => ({
-          DEFAULT: `rgba(17, 24, 39, ${opacityValue || 1})`,
-          dark: `rgba(243, 244, 246, ${opacityValue || 1})`,
-        }),
-        "background-inverted": ({ opacityValue }) => ({
-          DEFAULT: `rgba(0, 0, 0, ${opacityValue || 1})`,
-          dark: `rgba(255, 255, 255, ${opacityValue || 1})`,
-        }),
-        "background-emphasis": ({ opacityValue }) => ({
-          DEFAULT: `rgba(246, 247, 248, ${opacityValue || 1})`,
-          dark: `rgba(31, 41, 55, ${opacityValue || 1})`,
-        }),
-        "background-strong": ({ opacityValue }) => ({
-          DEFAULT: `rgba(234, 236, 239, ${opacityValue || 1})`,
-          dark: `rgba(55, 65, 81, ${opacityValue || 1})`,
-        }),
+        icon: "var(--color-icon)",
 
-        // Text or icons
-        "text-50": ({ opacityValue }) => ({
-          DEFAULT: `rgba(250, 250, 250, ${opacityValue || 1})`,
-          dark: `rgba(249, 250, 251, ${opacityValue || 1})`,
-        }),
-        "text-100": ({ opacityValue }) => ({
-          DEFAULT: `rgba(245, 245, 245, ${opacityValue || 1})`,
-          dark: `rgba(243, 244, 246, ${opacityValue || 1})`,
-        }),
-        "text-200": ({ opacityValue }) => ({
-          DEFAULT: `rgba(229, 229, 229, ${opacityValue || 1})`,
-          dark: `rgba(229, 231, 235, ${opacityValue || 1})`,
-        }),
-        "text-300": ({ opacityValue }) => ({
-          DEFAULT: `rgba(212, 212, 212, ${opacityValue || 1})`,
-          dark: `rgba(209, 213, 219, ${opacityValue || 1})`,
-        }),
-        "text-400": ({ opacityValue }) => ({
-          DEFAULT: `rgba(163, 163, 163, ${opacityValue || 1})`,
-          dark: `rgba(156, 163, 175, ${opacityValue || 1})`,
-        }),
-        "text-500": ({ opacityValue }) => ({
-          DEFAULT: `rgba(115, 115, 115, ${opacityValue || 1})`,
-          dark: `rgba(107, 114, 128, ${opacityValue || 1})`,
-        }),
-        "text-600": ({ opacityValue }) => ({
-          DEFAULT: `rgba(82, 82, 82, ${opacityValue || 1})`,
-          dark: `rgba(75, 85, 99, ${opacityValue || 1})`,
-        }),
-        "text-700": ({ opacityValue }) => ({
-          DEFAULT: `rgba(64, 64, 64, ${opacityValue || 1})`,
-          dark: `rgba(55, 65, 81, ${opacityValue || 1})`,
-        }),
-        "text-800": ({ opacityValue }) => ({
-          DEFAULT: `rgba(38, 38, 38, ${opacityValue || 1})`,
-          dark: `rgba(31, 41, 55, ${opacityValue || 1})`,
-        }),
+        background: "var(--color-background)",
+        "background-chat": "var(--color-chat-background)",
+        "background-100": "var(--color-background-100)",
+        "background-125": "var(--color-background-125)",
+        "background-150": "var(--color-background-150)",
+        "background-200": "var(--color-background-200)",
+        "background-300": "var(--color-background-300)",
+        "background-400": "var(--color-background-400)",
+        "background-500": "var(--color-background-500)",
+        "background-600": "var(--color-background-600)",
+        "background-700": "var(--color-background-700)",
+        "background-800": "var(--color-background-800)",
+        "background-900": "var(--color-background-900)",
+        "background-inverted": "var(--color-background-inverted)",
 
-        subtle: ({ opacityValue }) => ({
-          DEFAULT: `rgba(107, 114, 128, ${opacityValue || 1})`,
-          dark: `rgba(156, 163, 175, ${opacityValue || 1})`,
-        }),
-        default: ({ opacityValue }) => ({
-          DEFAULT: `rgba(75, 85, 99, ${opacityValue || 1})`,
-          dark: `rgba(209, 213, 219, ${opacityValue || 1})`,
-        }),
-        emphasis: ({ opacityValue }) => ({
-          DEFAULT: `rgba(55, 65, 81, ${opacityValue || 1})`,
-          dark: `rgba(243, 244, 246, ${opacityValue || 1})`,
-        }),
-        strong: ({ opacityValue }) => ({
-          DEFAULT: `rgba(17, 24, 39, ${opacityValue || 1})`,
-          dark: `rgba(249, 250, 251, ${opacityValue || 1})`,
-        }),
+        "background-input": "var(--color-background-input)",
 
-        link: ({ opacityValue }) => ({
-          DEFAULT: `rgba(59, 130, 246, ${opacityValue || 1})`,
-          dark: `rgba(96, 165, 250, ${opacityValue || 1})`,
-        }),
-        "link-hover": ({ opacityValue }) => ({
-          DEFAULT: `rgba(29, 78, 216, ${opacityValue || 1})`,
-          dark: `rgba(147, 197, 253, ${opacityValue || 1})`,
-        }),
-        inverted: ({ opacityValue }) => ({
-          DEFAULT: `rgba(255, 255, 255, ${opacityValue || 1})`,
-          dark: `rgba(0, 0, 0, ${opacityValue || 1})`,
-        }),
+        "background-emphasis": "var(--color-background-emphasis)",
+        "background-strong": "var(--color-background-strong)",
 
-        // One offs
-        error: ({ opacityValue }) => ({
-          DEFAULT: `rgba(239, 68, 68, ${opacityValue || 1})`,
-          dark: `rgba(248, 113, 113, ${opacityValue || 1})`,
-        }),
-        success: ({ opacityValue }) => ({
-          DEFAULT: `rgba(5, 150, 105, ${opacityValue || 1})`,
-          dark: `rgba(16, 185, 129, ${opacityValue || 1})`,
-        }),
-        alert: ({ opacityValue }) => ({
-          DEFAULT: `rgba(245, 158, 11, ${opacityValue || 1})`,
-          dark: `rgba(251, 191, 36, ${opacityValue || 1})`,
-        }),
-        accent: ({ opacityValue }) => ({
-          DEFAULT: `rgba(99, 102, 241, ${opacityValue || 1})`,
-          dark: `rgba(129, 140, 248, ${opacityValue || 1})`,
-        }),
+        "text-50": "var(--color-text-50)",
+        "text-100": "var(--color-text-100)",
+        text: "var(--color-text)",
+        "text-200": "var(--color-text-200)",
+        "text-300": "var(--color-text-300)",
+        "text-400": "var(--color-text-400)",
+        "text-500": "var(--color-text-500)",
+        "text-600": "var(--color-text-600)",
+        "text-700": "var(--color-text-700)",
+        "text-800": "var(--color-text-800)",
+        "text-900": "var(--color-text-900)",
 
-        // Borders
-        border: ({ opacityValue }) => ({
-          DEFAULT: `rgba(229, 231, 235, ${opacityValue || 1})`,
-          dark: `rgba(55, 65, 81, ${opacityValue || 1})`,
-        }),
-        "border-light": ({ opacityValue }) => ({
-          DEFAULT: `rgba(243, 244, 246, ${opacityValue || 1})`,
-          dark: `rgba(31, 41, 55, ${opacityValue || 1})`,
-        }),
-        "border-medium": ({ opacityValue }) => ({
-          DEFAULT: `rgba(209, 213, 219, ${opacityValue || 1})`,
-          dark: `rgba(75, 85, 99, ${opacityValue || 1})`,
-        }),
-        "border-strong": ({ opacityValue }) => ({
-          DEFAULT: `rgba(156, 163, 175, ${opacityValue || 1})`,
-          dark: `rgba(107, 114, 128, ${opacityValue || 1})`,
-        }),
-        "border-dark": ({ opacityValue }) => ({
-          DEFAULT: `rgba(82, 82, 82, ${opacityValue || 1})`,
-          dark: `rgba(229, 231, 235, ${opacityValue || 1})`,
-        }),
+        subtle: "var(--color-subtle)",
+        default: "var(--color-default)",
+        emphasis: "var(--color-emphasis)",
+        strong: "var(--color-strong)",
 
-        // Hover
-        "hover-light": ({ opacityValue }) => ({
-          DEFAULT: `rgba(243, 244, 246, ${opacityValue || 1})`,
-          dark: `rgba(31, 41, 55, ${opacityValue || 1})`,
-        }),
-        "hover-lightish": ({ opacityValue }) => ({
-          DEFAULT: `rgba(234, 235, 239, ${opacityValue || 1})`,
-          dark: `rgba(42, 52, 65, ${opacityValue || 1})`,
-        }),
-        hover: ({ opacityValue }) => ({
-          DEFAULT: `rgba(229, 231, 235, ${opacityValue || 1})`,
-          dark: `rgba(55, 65, 81, ${opacityValue || 1})`,
-        }),
-        "hover-emphasis": ({ opacityValue }) => ({
-          DEFAULT: `rgba(209, 213, 219, ${opacityValue || 1})`,
-          dark: `rgba(75, 85, 99, ${opacityValue || 1})`,
-        }),
-        "accent-hover": ({ opacityValue }) => ({
-          DEFAULT: `rgba(79, 70, 229, ${opacityValue || 1})`,
-          dark: `rgba(99, 102, 241, ${opacityValue || 1})`,
-        }),
+        link: "var(--color-link)",
+        "link-hover": "var(--color-link-hover)",
+        inverted: "var(--color-inverted)",
+
+        error: "var(--color-error)",
+        success: "var(--color-success)",
+        alert: "var(--color-alert)",
+        accent: "var(--color-accent)",
+
+        border: "var(--color-border)",
+        "border-light": "var(--color-border-light)",
+        "border-medium": "var(--color-border-medium)",
+        "border-strong": "var(--color-border-strong)",
+        "border-dark": "var(--color-border-dark)",
+
+        "hover-light": "var(--color-hover-light)",
+        "hover-lightish": "var(--color-hover-lightish)",
+        hover: "var(--color-hover)",
+        "hover-emphasis": "var(--color-hover-emphasis)",
+        "accent-hover": "var(--color-accent-hover)",
+
+        highlight: {
+          text: "var(--color-highlight-text)",
+        },
+
+        scrollbar: {
+          track: "var(--color-scrollbar-track)",
+          thumb: "var(--color-scrollbar-thumb)",
+          "thumb-hover": "var(--color-scrollbar-thumb-hover)",
+          dark: {
+            thumb: "var(--color-scrollbar-dark-thumb)",
+            "thumb-hover": "var(--color-scrollbar-dark-thumb-hover)",
+          },
+        },
+
+        user: "var(--color-user)",
+        ai: "var(--color-ai)",
+
+        document: "var(--color-document)",
       },
-
       // colors: {
       //   // code styling
       //   "code-bg": "black", // black

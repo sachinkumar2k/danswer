@@ -41,7 +41,7 @@ export default async function RootLayout({
   const combinedSettings = await getCombinedSettings({});
 
   return (
-    <html lang="en">
+    <html className="dark" lang="en">
       <Head>
         <meta
           name="viewport"
@@ -60,7 +60,7 @@ export default async function RootLayout({
         </head>
       )}
       <body className={`relative ${inter.variable} font-sans`}>
-        <div className="text-default bg-background">
+        <div className="text-text text-default bg-background">
           <SettingsProvider settings={combinedSettings}>
             {children}
           </SettingsProvider>

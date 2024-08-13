@@ -231,7 +231,10 @@ export const AIMessage = ({
   ).slice(0, 3);
 
   return (
-    <div ref={trackedElementRef} className={"py-5 px-2 lg:px-5 relative flex "}>
+    <div
+      ref={trackedElementRef}
+      className={"py-5 text-text px-2 lg:px-5 relative flex "}
+    >
       <div
         className={`mx-auto ${shared ? "w-full" : "w-[90%]"} max-w-message-max`}
       >
@@ -409,7 +412,7 @@ export const AIMessage = ({
                                   />
                                 ),
                                 p: ({ node, ...props }) => (
-                                  <p {...props} className="text-default" />
+                                  <p {...props} className="text-text" />
                                 ),
                               }}
                               remarkPlugins={[remarkGfm]}
@@ -535,6 +538,7 @@ export const AIMessage = ({
                         ref={hoverElementRef}
                         className={`
                         absolute -bottom-4
+                        text-text
                         invisible ${(isHovering || settings?.isMobile) && "!visible"}
                         opacity-0 ${(isHovering || settings?.isMobile) && "!opacity-100"}
                         translate-y-2 ${(isHovering || settings?.isMobile) && "!translate-y-0"}
@@ -655,7 +659,7 @@ export const HumanMessage = ({
 
   return (
     <div
-      className="pt-5 pb-1 px-2 lg:px-5 flex -mr-6 relative"
+      className="pt-5 pb-1 text-text px-2 lg:px-5 flex -mr-6 relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -688,24 +692,24 @@ export const HumanMessage = ({
                       <textarea
                         ref={textareaRef}
                         className={`
-                      m-0 
-                      w-full 
-                      h-auto
-                      shrink
-                      border-0
-                      rounded-lg 
-                      overflow-y-hidden
-                      bg-background-emphasis 
-                      whitespace-normal 
-                      break-word
-                      overscroll-contain
-                      outline-none 
-                      placeholder-gray-400 
-                      resize-none
-                      pl-4
-                      overflow-y-auto
-                      pr-12 
-                      py-4`}
+                            m-0 
+                            w-full 
+                            h-auto
+                            shrink
+                            border-0
+                            rounded-lg 
+                            overflow-y-hidden
+                            bg-background-emphasis 
+                            whitespace-normal 
+                            break-word
+                            overscroll-contain
+                            outline-none 
+                            placeholder-gray-400 
+                            resize-none
+                            pl-4
+                            overflow-y-auto
+                            pr-12 
+                            py-4`}
                         aria-multiline
                         role="textarea"
                         value={editedContent}

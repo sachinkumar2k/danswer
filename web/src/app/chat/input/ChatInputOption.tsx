@@ -54,7 +54,7 @@ export const ChatInputOption: React.FC<ChatInputOptionProps> = ({
         flex 
         items-center 
         space-x-2 
-        text-text-700
+        text-icon
         hover:bg-hover
         hover:text-emphasis
         p-1.5

@@ -2,6 +2,337 @@
 @tailwind components;
 @tailwind utilities;
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Black - Code background */
+    --color-code-bg: #000000;
+
+    /* Light gray - Code text */
+    --color-code-text: #e0e0e0;
+
+    /* Green - Token comment */
+    --color-token-comment: #608b4e;
+
+    /* Light gray - Token punctuation */
+    --color-token-punctuation: #d4d4d4;
+
+    /* Blue - Token property */
+    --color-token-property: #569cd6;
+
+    /* More vibrant orange - Token selector */
+    --color-token-selector: #e07b53;
+
+    /* More vibrant purple - Token atrule */
+    --color-token-atrule: #d18ad8;
+
+    /* More vibrant light yellow - Token function */
+    --color-token-function: #f0e68c;
+
+    /* Light blue - Token regex and attr-name */
+    --color-token-regex: #9cdcfe;
+    --color-token-attr-name: #9cdcfe;
+
+    /* White - Background search */
+    --color-background-search: #ffffff;
+
+    /* Input background */
+    --color-input: #f5f5f5;
+
+    /* Background colors */
+    --color-background: #fafafa;
+    --color-chat-background: #fafafa;
+
+    /* 50 */
+    --color-background-100: #f5f5f5;
+    /* neutral-100 */
+    --color-background-125: #f1f2f4;
+    /* gray-125 */
+    --color-background-150: #eaeaea;
+    /* gray-150 */
+    --color-background-200: #e5e5e5;
+    /* neutral-200 */
+    --color-background-300: #d4d4d4;
+    /* neutral-300 */
+    --color-background-400: #a3a3a3;
+    /* neutral-400 */
+    --color-background-800: #262626;
+    /* neutral-800 */
+    --color-background-900: #111827;
+    /* gray-900 */
+    --color-background-inverted: #000000;
+    /* black */
+
+    /* Background emphasis and strong */
+    --color-background-emphasis: #f6f7f8;
+    --color-background-strong: #eaecef;
+    --color-background-input: #f5f5f5;
+
+    /* Text colors */
+    --color-text-50: #fafafa;
+    /* 50, neutral-50 */
+    --color-text-100: #f5f5f5;
+    /* lighter, neutral-100 */
+    --color-text-200: #e5e5e5;
+    /* light, neutral-200 */
+    --color-text-300: #d4d4d4;
+    /* stronger, neutral-300 */
+    --color-text-400: #a3a3a3;
+    /* medium, neutral-400 */
+    --color-text-500: #737373;
+    /* darkMedium, neutral-500 */
+    --color-text-600: #525252;
+    /* dark, neutral-600 */
+    --color-text-700: #404040;
+    /* solid, neutral-700 */
+    --color-text-800: #262626;
+    /* solidDark, neutral-800 */
+
+    /* Text emphasis colors */
+    --color-subtle: #6b7280;
+    /* gray-500 */
+    --color-default: #4b5563;
+    /* gray-600 */
+    --color-emphasis: #374151;
+    /* gray-700 */
+    --color-strong: #111827;
+    /* gray-900 */
+
+    /* Link colors */
+    --color-link: #3b82f6;
+    /* blue-500 */
+    --color-link-hover: #1d4ed8;
+    /* blue-700 */
+    --color-inverted: #ffffff;
+    /* white */
+    --color-icon: #0a0a0a;
+
+    /* Status colors */
+    --color-error: #ef4444;
+    /* red-500 */
+    --color-success: #059669;
+    /* emerald-600 */
+    --color-alert: #f59e0b;
+    /* amber-600 */
+    --color-accent: #6366f1;
+    /* indigo-500 */
+
+    /* Border colors */
+    --color-border: #e5e7eb;
+    /* gray-200 */
+    --color-border-light: #f3f4f6;
+    /* gray-100 */
+    --color-border-medium: #d1d5db;
+    /* gray-300 */
+    --color-border-strong: #9ca3af;
+    /* gray-400 */
+    --color-border-dark: #525252;
+    /* neutral-600 */
+
+    /* Hover colors */
+    --color-hover-light: #f3f4f6;
+    /* gray-100 */
+    --color-hover-lightish: #eaebef;
+    /* gray-160 */
+    --color-hover: #e5e7eb;
+    /* gray-200 */
+    --color-hover-emphasis: #d1d5db;
+    /* gray-300 */
+    --color-accent-hover: #4f46e5;
+
+    /* Highlight color */
+    --color-highlight-text: #fef9c3;
+    /* yellow-100 */
+
+    /* Scrollbar colors */
+    --color-scrollbar-track: #f9fafb;
+    --color-scrollbar-thumb: #e5e7eb;
+    --color-scrollbar-thumb-hover: #d1d5db;
+    --color-scrollbar-dark-thumb: #989a9c;
+    --color-scrollbar-dark-thumb-hover: #c7cdd2;
+
+    /* User and AI chat bubble colors */
+    --color-user: #f1f2f4;
+    /* near gray-100 */
+    --color-ai: #60a5fa;
+    /* blue-400 */
+
+    /* Document color */
+    --color-document: #f43f5e;
+    /* pink-500 */
+  }
+
+  :root[class~="dark"] {
+    /* White - Code background */
+    --color-code-bg: #ffffff;
+
+    /* Dark gray - Code text */
+    --color-code-text: #1f1f1f;
+
+    /* Light green - Token comment */
+    --color-token-comment: #9fd4b1;
+
+    /* Dark gray - Token punctuation */
+    --color-token-punctuation: #2b2b2b;
+
+    /* Light blue - Token property */
+    --color-token-property: #a9d3ff;
+
+    /* Light orange - Token selector */
+    --color-token-selector: #ffc29a;
+
+    /* Light purple - Token atrule */
+    --color-token-atrule: #f0c7ff;
+
+    /* Light yellow - Token function */
+    --color-token-function: #fff9b3;
+
+    /* Light blue - Token regex and attr-name */
+    --color-token-regex: #c3e1ff;
+    --color-token-attr-name: #c3e1ff;
+
+    /* Black - Background search */
+    --color-background-search: #000000;
+
+    /* Dark input background */
+    --color-input: #0a0a0a;
+    --color-icon: #d4d4d4;
+
+    --color-strong: #e5e5e5;
+    /* gray-900 */
+
+    --color-emphasis: black;
+
+    /* Background colors */
+    /* Background colors */
+    --color-background: #0a0a0a;
+    --color-chat-background: #262626;
+    --color-background-input: #2f2f2f;
+
+    /* 950 */
+    --color-background-100: #171717;
+    /* neutral-900 */
+    --color-background-125: #1e1e1e;
+    /* custom between 900 and 800 */
+    --color-background-150: #222222;
+    /* custom between 900 and 800 */
+    --color-background-200: #262626;
+    /* neutral-800 */
+    --color-background-300: #404040;
+    /* neutral-700 */
+    --color-background-400: #525252;
+    /* neutral-600 */
+    --color-background-500: #737373;
+    /* neutral-500 */
+    --color-background-600: #a3a3a3;
+    /* neutral-400 */
+
+    --color-background-800: #f5f5f5;
+    /* neutral-100 */
+    --color-background-900: #fafafa;
+    /* neutral-50 */
+    --color-background-inverted: #ffffff;
+    /* white */
+
+    /* Background emphasis and strong */
+    --color-background-emphasis: #1a1a1a;
+    /* custom, slightly lighter than 900 */
+    --color-background-strong: #212121;
+    /* custom, between 900 and 800 */
+
+    /* Text colors */
+    --color-text: #e5e5e5;
+    /* neutral-800 */
+    --color-text-50: #262626;
+    /* neutral-800 */
+    --color-text-100: #404040;
+    /* neutral-700 */
+    --color-text-200: #525252;
+    /* neutral-600 */
+    --color-text-300: #737373;
+    /* neutral-500 */
+    --color-text-400: #a3a3a3;
+    /* neutral-400 */
+    --color-text-500: #d4d4d4;
+    /* neutral-300 */
+    --color-text-600: #e5e5e5;
+    /* neutral-200 */
+    --color-text-700: #f5f5f5;
+    /* neutral-100 */
+    --color-text-800: #1e1a1a;
+    /* neutral-50 */
+    /* Text emphasis colors */
+
+    /* Link colors */
+    --color-link: #c4d7ff;
+    /* blue-300 */
+    --color-link-hover: #e2b227;
+    /* yellow-400 */
+    --color-inverted: #000000;
+    /* black */
+
+    /* Status colors (keeping these the same for consistency) */
+    --color-error: #ef4444;
+    /* red-500 */
+    --color-success: #059669;
+    /* emerald-600 */
+    --color-alert: #f59e0b;
+    /* amber-600 */
+    --color-accent: #6366f1;
+    /* indigo-500 */
+
+    /* Border colors */
+    --color-border: #2e2424;
+    /* gray-800 */
+    --color-border-light: #0c0909;
+    /* gray-900 */
+    --color-border-medium: #2e2424;
+    /* gray-700 */
+    --color-border-strong: #635c50;
+    /* gray-600 */
+    --color-border-dark: #adadad;
+    /* neutral-400 */
+
+    /* Hover colors */
+    --color-hover-light: #0c0909;
+    /* gray-900 */
+    --color-hover-lightish: #151410;
+    /* gray-840 */
+    --color-hover: #1a1814;
+    /* gray-800 */
+    --color-hover-emphasis: #2e2424;
+    /* gray-700 */
+    --color-accent-hover: #b0b1fa;
+
+    /* Highlight color */
+    --color-highlight-text: #10063c;
+    /* dark purple */
+
+    /* Scrollbar colors */
+    --color-scrollbar-track: #060604;
+    --color-scrollbar-thumb: #1a1814;
+    --color-scrollbar-thumb-hover: #2e2424;
+    --color-scrollbar-dark-thumb: #676563;
+    --color-scrollbar-dark-thumb-hover: #38322d;
+
+    /* User and AI chat bubble colors */
+    --color-user: #0e0d0b;
+    /* near gray-875 */
+    --color-ai: #9f5a05;
+    /* dark orange */
+
+    /* Document color */
+    --color-document: #0bc4a1;
+    /* teal-400 */
+  }
+}
+
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
