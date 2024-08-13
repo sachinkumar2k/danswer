@@ -59,8 +59,15 @@ export default async function RootLayout({
           />
         </head>
       )}
-
       <body className={`relative ${inter.variable} font-sans`}>
+        <div className="text-default bg-background">
+          <SettingsProvider settings={combinedSettings}>
+            {children}
+          </SettingsProvider>
+        </div>
+      </body>
+
+      {/* <body className={`relative ${inter.variable} font-sans`}>
         <div
           className={`text-default bg-background ${
             // TODO: remove this once proper dark mode exists
@@ -71,7 +78,7 @@ export default async function RootLayout({
             {children}
           </SettingsProvider>
         </div>
-      </body>
+      </body> */}
     </html>
   );
 }
