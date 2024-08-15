@@ -1,6 +1,4 @@
 "use client";
-import ReactMarkdown from "react-markdown";
-
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import {
   BackendChatSession,
@@ -899,7 +897,6 @@ export function ChatPage({
 
         if (!stack.isEmpty()) {
           const packet = stack.nextPacket();
-          console.log(packet);
           if (packet) {
             if (Object.hasOwn(packet, "answer_piece")) {
               answer += (packet as AnswerPiecePacket).answer_piece;

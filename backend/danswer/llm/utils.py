@@ -47,7 +47,7 @@ if TYPE_CHECKING:
 logger = setup_logger()
 
 
-def litellm_exception_to_error_msg(e: Exception, llm: LLM) -> str:
+def streaming_exception_to_error_msg(e: Exception, llm: LLM) -> str:
     error_msg = str(e)
 
     if isinstance(e, BadRequestError):
