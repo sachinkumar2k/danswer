@@ -1,5 +1,6 @@
-import React from "react";
-import { useState, ReactNode } from "react";
+import React, { useRef } from "react";
+import { useState, useEffect, ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { FiCheck, FiCopy } from "react-icons/fi";
 
 interface CodeBlockProps {
@@ -63,7 +64,7 @@ export function CodeBlock({
   };
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="w-full">
       <div className="flex mx-3 py-2 text-xs">
         {language}
         {codeText && (
@@ -85,11 +86,51 @@ export function CodeBlock({
           </div>
         )}
       </div>
-      <pre {...props} className="overflow-x-scroll" style={{ padding: "1rem" }}>
-        <code className={`text-sm overflow-x-auto ${className}`}>
+      <pre {...props} className="overflow-x-auto" style={{ padding: "1rem" }}>
+        <code className={`text-sm overflow-x-scroll ${className}`}>
           {children}
+          testing testing testing testing testing testing testing testing
+          testing testing testingtestingtesting testing testing testing testing
+          testing testing testing testing testing testingtestingtesting testing
+          testing testing testing testing testing testing testing testing
+          testingtesting
         </code>
       </pre>
     </div>
   );
 }
+interface PortalCodeBlockProps {
+  content: string;
+  language?: string;
+}
+
+export const PortalCodeBlock: React.FC<PortalCodeBlockProps> = ({
+  content,
+  language,
+}) => {
+  const [container] = useState(() => document.createElement("div"));
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.appendChild(container);
+    }
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.removeChild(container);
+      }
+    };
+  }, [container]);
+
+  return (
+    <div ref={containerRef}>
+      {createPortal(
+        <CodeBlock
+          content={content}
+          className={language ? `language-${language}` : ""}
+        />,
+        container
+      )}
+    </div>
+  );
+};

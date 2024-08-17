@@ -26,14 +26,14 @@ import { ToolRunningAnimation } from "../tools/ToolRunningAnimation";
 import { Hoverable } from "@/components/Hoverable";
 import { DocumentPreview } from "../files/documents/DocumentPreview";
 import { InMessageImage } from "../files/images/InMessageImage";
-import { CodeBlock } from "./CodeBlock";
-import rehypePrism from "rehype-prism-plus";
+import { CodeBlock, PortalCodeBlock } from "./CodeBlock";
+// import rehypePrism from "rehype-prism-plus";
 
 // Prism stuff
-import Prism from "prismjs";
+// import Prism from "prismjs";
 
-import "prismjs/themes/prism-tomorrow.css";
-import "./custom-code-styles.css";
+// import "prismjs/themes/prism-tomorrow.css";
+// import "./custom-code-styles.css";
 
 function FileDisplay({ files }: { files: FileDescriptor[] }) {
   const imageFiles = files.filter((file) => file.type === ChatFileType.IMAGE);
@@ -103,16 +103,16 @@ export const AIMessage = ({
   handleForceSearch?: () => void;
   retrievalDisabled?: boolean;
 }) => {
-  const [isReady, setIsReady] = useState(false);
-  useEffect(() => {
-    Prism.highlightAll();
-    setIsReady(true);
-  }, []);
+  // const [isReady, setIsReady] = useState(false);
+  // useEffect(() => {
+  //   Prism.highlightAll();
+  //   setIsReady(true);
+  // }, []);
 
   // this is needed to give Prism a chance to load
-  if (!isReady) {
-    return <div />;
-  }
+  // if (!isReady) {
+  //   return <div />;
+  // }
 
   if (!isComplete) {
     const trimIncompleteCodeSection = (
@@ -220,8 +220,8 @@ export const AIMessage = ({
 
                 {typeof content === "string" ? (
                   <ReactMarkdown
-                    key={messageId}
-                    className="prose max-w-full"
+                    key={0}
+                    className="  max-w-full"
                     components={{
                       a: ({ node, ...props }) => (
                         <a
@@ -232,11 +232,21 @@ export const AIMessage = ({
                         />
                       ),
                       code: (props) => (
-                        <CodeBlock {...props} content={content as string} />
+                        <PortalCodeBlock
+                          content={content as string}
+                          language={"javascript"}
+                        />
+                        // <div key={10} className="w-full">
+                        //   <pre className="overflow-x-auto" style={{ padding: "1rem" }}>
+                        //     <code className={`text-sm overflow-x-scroll `}>
+                        //       1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5
+                        //     </code>
+                        //   </pre>
+                        // </div>
                       ),
                     }}
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypePrism]}
+                    // remarkPlugins={[remarkGfm]}
+                    // rehypePlugins={[rehypePrism]}
                   >
                     {content}
                   </ReactMarkdown>
@@ -247,6 +257,15 @@ export const AIMessage = ({
             ) : isComplete ? null : (
               loader
             )}
+            {/* <div className="  max-w-full">
+              <div className="w-full">
+                <pre className="overflow-x-auto" style={{ padding: "1rem" }}>
+                  <code className={`text-sm overflow-x-scroll `}>
+                    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5    1 2 3 4 5
+                  </code>
+                </pre>
+              </div>
+            </div> */}
             {citedDocuments && citedDocuments.length > 0 && (
               <div className="mt-2">
                 <b className="text-sm text-emphasis">Sources:</b>
