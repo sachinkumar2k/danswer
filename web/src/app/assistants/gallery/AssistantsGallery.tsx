@@ -150,9 +150,9 @@ export function AssistantsGallery({
                           }
                         }}
                         size="xs"
-                        color="red"
+                        color="fuchsia"
                       >
-                        Remove
+                        Unselect
                       </Button>
                     ) : (
                       <Button

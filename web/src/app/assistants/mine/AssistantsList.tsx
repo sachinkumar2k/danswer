@@ -4,10 +4,22 @@ import { useState } from "react";
 import { MinimalUserSnapshot, User } from "@/lib/types";
 import { Persona } from "@/app/admin/assistants/interfaces";
 import { Divider, Text } from "@tremor/react";
-import { FiEdit2, FiPlus, FiSearch, FiShare2 } from "react-icons/fi";
+import {
+  FiEdit2,
+  FiMenu,
+  FiMoreHorizontal,
+  FiPlus,
+  FiSearch,
+  FiShare2,
+  FiX,
+} from "react-icons/fi";
 import Link from "next/link";
 import { orderAssistantsForUser } from "@/lib/assistants/orderAssistants";
-import { updateUserAssistantList } from "@/lib/assistants/updateAssistantPreferences";
+import {
+  addAssistantToList,
+  removeAssistantFromList,
+  updateUserAssistantList,
+} from "@/lib/assistants/updateAssistantPreferences";
 import { AssistantIcon } from "@/components/assistants/AssistantIcon";
 import { DefaultPopover } from "@/components/popover/DefaultPopover";
 import { PopupSpec, usePopup } from "@/components/admin/connectors/Popup";
@@ -89,12 +101,15 @@ function AssistantListItem({
   isFirst: boolean;
   isLast: boolean;
   isVisible: boolean;
+
   setPopup: (popupSpec: PopupSpec | null) => void;
 }) {
   const router = useRouter();
   const [showSharingModal, setShowSharingModal] = useState(false);
 
   const isOwnedByUser = checkUserOwnsAssistant(user, assistant);
+  const currentChosenAssistants = user?.preferences
+    ?.chosen_assistants as number[];
 
   return (
     <>
@@ -158,6 +173,81 @@ function AssistantListItem({
               >
                 <FiEdit2 size={16} />
               </Link>
+
+              <DefaultPopover
+                content={
+                  <div className="hover:bg-hover rounded p-2 cursor-pointer">
+                    <FiMoreHorizontal size={16} />
+                  </div>
+                }
+                side="bottom"
+                align="start"
+                sideOffset={5}
+              >
+                {[
+                  isVisible ? (
+                    <div
+                      key="remove"
+                      className="flex items-center gap-x-2"
+                      onClick={async () => {
+                        if (
+                          currentChosenAssistants &&
+                          currentChosenAssistants.length === 1
+                        ) {
+                          setPopup({
+                            message: `Cannot remove "${assistant.name}" - you must have at least one assistant.`,
+                            type: "error",
+                          });
+                          return;
+                        }
+                        const success = await removeAssistantFromList(
+                          assistant.id,
+                          currentChosenAssistants || allAssistantIds
+                        );
+                        if (success) {
+                          setPopup({
+                            message: `"${assistant.name}" has been removed from your list.`,
+                            type: "success",
+                          });
+                          router.refresh();
+                        } else {
+                          setPopup({
+                            message: `"${assistant.name}" could not be removed from your list.`,
+                            type: "error",
+                          });
+                        }
+                      }}
+                    >
+                      <FiX /> {isOwnedByUser ? "Hide" : "Remove"}
+                    </div>
+                  ) : (
+                    <div
+                      key="add"
+                      className="flex items-center gap-x-2"
+                      onClick={async () => {
+                        const success = await addAssistantToList(
+                          assistant.id,
+                          currentChosenAssistants || allAssistantIds
+                        );
+                        if (success) {
+                          setPopup({
+                            message: `"${assistant.name}" has been added to your list.`,
+                            type: "success",
+                          });
+                          router.refresh();
+                        } else {
+                          setPopup({
+                            message: `"${assistant.name}" could not be added to your list.`,
+                            type: "error",
+                          });
+                        }
+                      }}
+                    >
+                      <FiPlus /> Add
+                    </div>
+                  ),
+                ]}
+              </DefaultPopover>
             </div>
           )}
         </div>
