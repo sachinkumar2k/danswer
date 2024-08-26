@@ -112,28 +112,28 @@ export const DocumentSetCreationForm = ({
             />
 
             <Divider />
-
-            <h2 className="mb-1 font-medium text-base">
-              Pick your connectors:
-            </h2>
-            <p className="mb-3 text-xs">
-              All documents indexed by the selected connectors will be a part of
-              this document set.
-            </p>
-            <FieldArray
-              name="cc_pair_ids"
-              render={(arrayHelpers: ArrayHelpers) => (
-                <div className="mb-3 flex gap-2 flex-wrap">
-                  {ccPairs.map((ccPair) => {
-                    const ind = props.values.cc_pair_ids.indexOf(
-                      ccPair.cc_pair_id
-                    );
-                    let isSelected = ind !== -1;
-                    return (
-                      <div
-                        key={`${ccPair.connector.id}-${ccPair.credential.id}`}
-                        className={
-                          `
+            <div>
+              <h2 className="mb-1 font-medium text-base">
+                Pick your connectors:
+              </h2>
+              <p className="mb-3 text-xs">
+                All documents indexed by the selected connectors will be a part
+                of this document set.
+              </p>
+              <FieldArray
+                name="cc_pair_ids"
+                render={(arrayHelpers: ArrayHelpers) => (
+                  <div className="mb-3 flex gap-2 flex-wrap">
+                    {ccPairs.map((ccPair) => {
+                      const ind = props.values.cc_pair_ids.indexOf(
+                        ccPair.cc_pair_id
+                      );
+                      let isSelected = ind !== -1;
+                      return (
+                        <div
+                          key={`${ccPair.connector.id}-${ccPair.credential.id}`}
+                          className={
+                            `
                               px-3 
                               py-1
                               rounded-lg 
@@ -142,33 +142,34 @@ export const DocumentSetCreationForm = ({
                               w-fit 
                               flex 
                               cursor-pointer ` +
-                          (isSelected
-                            ? " bg-background-strong"
-                            : " hover:bg-hover")
-                        }
-                        onClick={() => {
-                          if (isSelected) {
-                            arrayHelpers.remove(ind);
-                          } else {
-                            arrayHelpers.push(ccPair.cc_pair_id);
+                            (isSelected
+                              ? " bg-background-strong"
+                              : " hover:bg-hover")
                           }
-                        }}
-                      >
-                        <div className="my-auto">
-                          <ConnectorTitle
-                            connector={ccPair.connector}
-                            ccPairId={ccPair.cc_pair_id}
-                            ccPairName={ccPair.name}
-                            isLink={false}
-                            showMetadata={false}
-                          />
+                          onClick={() => {
+                            if (isSelected) {
+                              arrayHelpers.remove(ind);
+                            } else {
+                              arrayHelpers.push(ccPair.cc_pair_id);
+                            }
+                          }}
+                        >
+                          <div className="my-auto">
+                            <ConnectorTitle
+                              connector={ccPair.connector}
+                              ccPairId={ccPair.cc_pair_id}
+                              ccPairName={ccPair.name}
+                              isLink={false}
+                              showMetadata={false}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            />
+                      );
+                    })}
+                  </div>
+                )}
+              />
+            </div>
 
             {isPaidEnterpriseFeaturesEnabled &&
               userGroups &&

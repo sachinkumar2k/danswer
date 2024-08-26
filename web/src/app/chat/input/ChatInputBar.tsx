@@ -274,12 +274,10 @@ export function ChatInputBar({
 
   return (
     <div id="danswer-chat-input">
-      <div className="flex justify-center max-w-screen-lg mx-auto">
+      <div className="flex justify-center mx-auto">
         <div
           className="
-            w-[90%]
-            max-w-searchbar-max
-            shrink
+            w-[800px]
             relative
             desktop:px-4
             mx-auto
@@ -486,8 +484,7 @@ export function ChatInputBar({
                 outline-none
                 placeholder-subtle
                 resize-none
-                pl-4
-                pr-12
+                px-4
                 py-4
                 h-14
               `}
@@ -559,7 +556,6 @@ export function ChatInputBar({
                     ref={ref}
                     llmOverrideManager={llmOverrideManager}
                     chatSessionId={chatSessionId}
-                    currentAssistant={selectedAssistant}
                   />
                 )}
                 position="top"
