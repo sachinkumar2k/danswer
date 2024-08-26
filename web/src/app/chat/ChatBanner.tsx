@@ -34,27 +34,6 @@ export function ChatBanner() {
     return null;
   }
 
-  const renderMarkdown = (className: string) => (
-    <ReactMarkdown
-      className={`w-full text-wrap break-word ${className}`}
-      components={{
-        a: ({ node, ...props }) => (
-          <a
-            {...props}
-            className="text-sm text-link hover:text-link-hover"
-            target="_blank"
-            rel="noopener noreferrer"
-          />
-        ),
-        p: ({ node, ...props }) => (
-          <p {...props} className="text-wrap break-word text-sm m-0 w-full" />
-        ),
-      }}
-      remarkPlugins={[remarkGfm]}
-    >
-      {settings.enterpriseSettings?.custom_header_content}
-    </ReactMarkdown>
-  );
   return (
     <div
       className={`

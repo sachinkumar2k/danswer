@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ChatIcon, SearchIcon } from "@/components/icons/icons";
 import { SettingsContext } from "@/components/settings/SettingsProvider";
 import KeyboardSymbol from "@/lib/browserUtilities";
+import { ChatBanner } from "../ChatBanner";
 
 const ToggleSwitch = () => {
   const commandSymbol = KeyboardSymbol();
@@ -136,15 +137,20 @@ export default function FunctionalWrapper({
       {(!settings ||
         (settings.search_page_enabled && settings.chat_page_enabled)) && (
         <div
-          className={`mobile:hidden z-30 flex fixed ${chatBannerPresent ? "top-20" : "top-4"} left-1/2 transform -translate-x-1/2`}
+          className={`mobile:hidden z-30 flex flex-col fixed top-4 left-1/2 transform -translate-x-1/2`}
         >
-          <div
-            style={{ transition: "width 0.30s ease-out" }}
-            className={`flex-none overflow-y-hidden bg-background-100 transition-all bg-opacity-80 duration-300 ease-in-out h-full
+          {/* {chatBannerPresent && <div className="w-full mb-2  mobile:-mx-20 desktop:px-4">
+              <ChatBanner />
+            </div>} */}
+          <div className="flex mx-auto ">
+            <div
+              style={{ transition: "width 0.30s ease-out" }}
+              className={`flex-none overflow-y-hidden bg-background-100 transition-all bg-opacity-80 duration-300 ease-in-out h-full
                         ${toggledSidebar ? "w-[250px] " : "w-[0px]"}`}
-          />
-          <div className="relative">
-            <ToggleSwitch />
+            />
+            <div className="relative">
+              <ToggleSwitch />
+            </div>
           </div>
         </div>
       )}
