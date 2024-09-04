@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class TestEmbeddingRequest(BaseModel):
-    provider_type: EmbeddingProvider | None
+    provider_type: EmbeddingProvider
     api_key: str | None = None
     api_url: str | None = None
 
